@@ -114,12 +114,19 @@ const app = express();
 const path = require('path');
 const fs = require('fs');
 
-// Попытка подключить QRCode если установлен
+// Попытка подключить QRCode и nodemailer если установлены
 let QRCode;
 try {
   QRCode = require('qrcode');
 } catch (e) {
   console.warn('⚠ QRCode не установлен. Установите: npm install qrcode');
+}
+
+let nodemailer;
+try {
+  nodemailer = require('nodemailer');
+} catch (e) {
+  console.warn('⚠ nodemailer не установлен. Установите: npm install nodemailer');
 }
 
 let port = process.env.PORT || 3000;
@@ -131,6 +138,39 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Маршруты API
 app.use('/api', require('./routes'));
+
+app.post('/api/send-email', async (req, res) => {
+  if (!nodemailer) {
+    return res.status(500).json({ error: 'nodemailer не установлен. Установите npm install nodemailer' });
+  }
+
+  const { to, subject, text } = req.body;
+  if (!to || !subject || !text) {
+    return res.status(400).json({ error: 'Поля to, subject и text обязательны' });
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.example.com',
+    port: parseInt(process.env.SMTP_PORT, 10) || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER || 'user@example.com',
+      pass: process.env.SMTP_PASS || 'password'
+    }
+  });
+
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_FROM || 'no-reply@example.com',
+      to,
+      subject,
+      text
+    });
+    res.json({ status: 'ok', message: 'Письмо отправлено', info });
+  } catch (err) {
+    res.status(500).json({ error: 'Не удалось отправить письмо', message: err.message });
+  }
+});
 
 // Главная страница
 app.get('/', (req, res) => {
@@ -203,7 +243,8 @@ app.use((req, res) => {
       '/',
       '/api/greet?user=1',
       '/api/status',
-      '/api/qrcode'
+      '/api/qrcode',
+      '/api/send-email'
     ]
   });
 });
@@ -487,7 +528,8 @@ module.exports = {};
   },
   "dependencies": {
     "express": "^4.18.2",
-    "qrcode": "^1.5.3"
+    "qrcode": "^1.5.3",
+    "nodemailer": "^6.9.4"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

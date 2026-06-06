@@ -81,7 +81,7 @@ try {
 }
 
 writeFile('generator/index.html', `<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,17 +91,59 @@ writeFile('generator/index.html', `<!DOCTYPE html>
 <body>
   <div class="app">
     <h1>${name} Generator</h1>
-    <script src="js/script.js"></script>
+    <p id="status">Запуск генератора проекта...</p>
+    <button id="generateButton">Перегенерировать проект</button>
   </div>
+  <script src="js/script.js"></script>
 </body>
 </html>
 `);
 
-writeFile('generator/js/script.js', `console.log('Generator web script loaded for ${name}');
+writeFile('generator/js/script.js', `async function runGenerate() {
+  const status = document.getElementById('status');
+  const button = document.getElementById('generateButton');
+  button.disabled = true;
+  status.textContent = 'Генерация структуры проекта...';
+
+  try {
+    const response = await fetch('/api/generate');
+    const result = await response.json();
+    if (response.ok) {
+      status.textContent = result.message || 'Структура проекта сгенерирована.';
+    } else {
+      status.textContent = 'Ошибка генерации: ' + (result.message || response.statusText);
+    }
+  } catch (error) {
+    status.textContent = 'Ошибка генерации: ' + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('generateButton').addEventListener('click', runGenerate);
+  runGenerate();
+});
 `);
 writeFile('generator/css/style.css', `.app {
   font-family: Arial, sans-serif;
   padding: 24px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+button {
+  margin-top: 16px;
+  padding: 12px 20px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 `);
 
@@ -268,26 +310,152 @@ writeFile('web/angular.json', `{
 `);
 
 writeFile('server/server.js', `const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const app = express();
-const port = process.env.PORT || 3000;
+let port = process.env.PORT || 3000;
+
+let QRCode;
+try {
+  QRCode = require('qrcode');
+} catch (err) {
+  console.warn('⚠ QRCode не установлен. Установите npm install qrcode');
+}
+
+let nodemailer;
+try {
+  nodemailer = require('nodemailer');
+} catch (err) {
+  console.warn('⚠ nodemailer не установлен. Установите npm install nodemailer');
+}
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'generator')));
 app.use('/api', require('./routes'));
+
+app.get('/api/generate', (req, res) => {
+  const generatorPage = path.join(__dirname, '..', 'generator', 'index.html');
+  if (!fs.existsSync(generatorPage)) {
+    return res.status(404).json({ status: 'error', message: 'generator/index.html не найден' });
+  }
+  res.json({ status: 'ok', message: 'Страница генератора доступна и готова.' });
+});
+
+app.post('/api/send-email', async (req, res) => {
+  if (!nodemailer) {
+    return res.status(500).json({ error: 'nodemailer не установлен. Установите npm install nodemailer' });
+  }
+
+  const { to, subject, text } = req.body;
+  if (!to || !subject || !text) {
+    return res.status(400).json({ error: 'Поля to, subject и text обязательны' });
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.example.com',
+    port: parseInt(process.env.SMTP_PORT, 10) || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER || 'user@example.com',
+      pass: process.env.SMTP_PASS || 'password'
+    }
+  });
+
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_FROM || 'no-reply@example.com',
+      to,
+      subject,
+      text
+    });
+    res.json({ status: 'ok', message: 'Письмо отправлено', info });
+  } catch (err) {
+    res.status(500).json({ error: 'Не удалось отправить письмо', message: err.message });
+  }
+});
+
+app.get('/', (req, res) => {
+  const generatorPage = path.join(__dirname, '..', 'generator', 'index.html');
+  if (fs.existsSync(generatorPage)) {
+    return res.sendFile(generatorPage);
+  }
+
+  const indexPath = path.join(__dirname, 'public', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+
+  res.status(404).send('Файл генератора не найден');
+});
+
+app.get('/api/qrcode', async (req, res) => {
+  if (!QRCode) {
+    return res.status(400).json({ error: 'QRCode модуль не установлен. Установите npm install qrcode' });
+  }
+
+  try {
+    const url = 'http://localhost:' + port;
+    const qrCode = await QRCode.toDataURL(url);
+    res.json({ qrCode, url });
+  } catch (err) {
+    res.status(500).json({ error: 'Не удалось создать QR-код', message: err.message });
+  }
+});
+
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Маршрут не найден',
+    path: req.path,
+    availableRoutes: ['/', '/api/greet?user=1', '/api/users', '/api/status', '/api/qrcode', '/api/send-email']
+  });
+});
 
 app.listen(port, () => {
   console.log('Server running on http://localhost:' + port);
 });
 `);
+
 writeFile('server/routes/index.js', `const express = require('express');
 const router = express.Router();
 
 router.get('/greet', (req, res) => {
-  const user = req.query.user || '1';
-  res.json({ message: 'Привет, пользователь ' + user + '! Добро пожаловать в ${name}!' });
+  const user = parseInt(req.query.user, 10) || 1;
+  const count = Math.min(10, Math.max(1, user));
+  const users = Array.from({ length: count }, (_, i) => ({
+    id: i + 1,
+    name: 'Пользователь ' + (i + 1),
+    message: 'Привет, ' + (i + 1) + '!',
+  }));
+
+  res.json({
+    message: 'Добро пожаловать в приложение!',
+    users,
+    total: users.length,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+router.get('/status', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
+router.get('/users', (req, res) => {
+  res.json({
+    users: Array.from({ length: 5 }, (_, i) => ({
+      id: i + 1,
+      name: 'Пользователь ' + (i + 1),
+    })),
+  });
 });
 
 module.exports = router;
 `);
+
 writeFile('server/models/exampleModel.js', `// Определите Mongoose-схемы здесь
 module.exports = {};`);
 writeFile('shared/index.ts', `export const shared = {
@@ -302,10 +470,16 @@ writeFile('package.json', `{
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
   },
   "dependencies": {
-    "express": "^4.18.0"
+    "express": "^4.18.0",
+    "qrcode": "^1.5.3",
+    "nodemailer": "^6.9.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
 `);
@@ -328,6 +502,19 @@ writeFile('README.md', `# ${name}
 
 	npm install
 	npm start
+
+## Пример отправки почты
+
+Сервер поддерживает POST-запрос на \`/api/send-email\`.
+Требуются поля JSON: \`to\`, \`subject\`, \`text\`.
+
+Можно задать параметры SMTP через \`.env\`:
+
+	SMTP_HOST=smtp.example.com
+	SMTP_PORT=587
+	SMTP_USER=user@example.com
+	SMTP_PASS=secret
+	SMTP_FROM=no-reply@example.com
 `);
 
 console.log(`Проект ${name} создан в ${root}`);

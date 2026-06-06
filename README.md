@@ -217,6 +217,10 @@ npm link
 # После этого команда доступна из любой папки
 create-bard-project MyApp
 
+# Если вы не хотите устанавливать глобально, то в папке расширения
+# команда создаст проект на рабочем столе по имени
+npm run create-bard-project MyApp
+
 # Установить из GitHub репозитория
 npm install -g git+https://github.com/Code-BardProject/redactor-vscode-bard-project-language.git
 
@@ -547,3 +551,20 @@ npx create-bard-project MyApp будет работать после публи�
 добавить publishConfig для GitHub Packages,
 подготовить .npmignore или files для публикации,
 сделать команду npm link инструкцию.
+
+
+
+
+
+
+
+
+
+
+
+
+Что сделано
+git add .
+git commit уже был сделан
+git push -f origin master:main
+master теперь отслеживает origin/main
