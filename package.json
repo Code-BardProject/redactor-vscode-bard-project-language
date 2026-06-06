@@ -1,0 +1,99 @@
+{
+  "name": "create-bard-project",
+  "displayName": "Bard Project Language",
+  "description": "VS Code extension and CLI for .bard-project language with project scaffolding for React Native, Angular, Node.js and MongoDB Atlas.",
+  "version": "0.0.1",
+  "publisher": "bard-project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Code-BardProject/redactor-vscode-bard-project-language.git"
+  },
+  "homepage": "https://github.com/Code-BardProject/redactor-vscode-bard-project-language",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "bard-project",
+    "code-generator",
+    "react-native",
+    "angular",
+    "nodejs",
+    "mongodb-atlas",
+    "cli"
+  ],
+  "license": "MIT",
+  "files": [
+    "scripts",
+    "src",
+    "syntaxes",
+    "language-configuration.json",
+    "package.json",
+    "README.md"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Programming Languages", "Other"],
+  "activationEvents": [
+    "onLanguage:bard-project",
+    "onCommand:bard-project.createProject",
+    "onCommand:bard-project.generateTargets",
+    "onCommand:bard-project.openProjectGuide"
+  ],
+  "main": "./out/extension.js",
+  "bin": {
+    "create-bard-project": "./scripts/createBardProject.js"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "bard-project",
+        "aliases": ["Bard Project", "bard-project"],
+        "extensions": [".bard-project"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bard-project",
+        "scopeName": "source.bard-project",
+        "path": "./syntaxes/bard-project.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "bard-project.createProject",
+        "title": "Bard Project: Create Project"
+      },
+      {
+        "command": "bard-project.generateTargets",
+        "title": "Bard Project: Generate React Native / Angular / Node.js"
+      },
+      {
+        "command": "bard-project.openProjectGuide",
+        "title": "Bard Project: Open Project Guide"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./tsconfig.json",
+    "watch": "tsc -watch -p ./tsconfig.json",
+    "create-bard-project": "node ./scripts/createBardProject.js",
+    "generate": "node ./scripts/generateCode.js --all",
+    "generate:web": "node ./scripts/generateCode.js --web",
+    "generate:android": "node ./scripts/generateCode.js --android",
+    "generate:ios": "node ./scripts/generateCode.js --ios",
+    "generate:linux": "node ./scripts/generateCode.js --linux",
+    "generate:windows": "node ./scripts/generateCode.js --windows",
+    "generate:macos": "node ./scripts/generateCode.js --macos",
+    "generate:server": "node ./scripts/generateCode.js --server",
+    "generate:test": "node ./scripts/generateCode.js --test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.120.0",
+    "typescript": "^5.5.0",
+    "vscode-test": "^1.6.1"
+  }
+}

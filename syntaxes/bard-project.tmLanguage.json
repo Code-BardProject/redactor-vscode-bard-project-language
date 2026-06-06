@@ -1,0 +1,40 @@
+{
+  "scopeName": "source.bard-project",
+  "name": "Bard Project",
+  "patterns": [
+    {
+      "begin": "<html>",
+      "beginCaptures": {"0": {"name": "punctuation.definition.tag.begin.bard-project"}},
+      "end": "</html>",
+      "endCaptures": {"0": {"name": "punctuation.definition.tag.end.bard-project"}},
+      "contentName": "text.html.basic",
+      "patterns": [{"include": "text.html.basic"}]
+    },
+    {
+      "begin": "<css>",
+      "beginCaptures": {"0": {"name": "punctuation.definition.tag.begin.bard-project"}},
+      "end": "</css>",
+      "endCaptures": {"0": {"name": "punctuation.definition.tag.end.bard-project"}},
+      "contentName": "source.css",
+      "patterns": [{"include": "source.css"}]
+    },
+    {
+      "begin": "<js>",
+      "beginCaptures": {"0": {"name": "punctuation.definition.tag.begin.bard-project"}},
+      "end": "</js>",
+      "endCaptures": {"0": {"name": "punctuation.definition.tag.end.bard-project"}},
+      "contentName": "source.js.embedded.html",
+      "patterns": [{"include": "source.js"}]
+    },
+    {
+      "begin": "<backend>",
+      "beginCaptures": {"0": {"name": "punctuation.definition.tag.begin.bard-project"}},
+      "end": "</backend>",
+      "endCaptures": {"0": {"name": "punctuation.definition.tag.end.bard-project"}},
+      "contentName": "source.js",
+      "patterns": [{"include": "source.js"}]
+    }
+  ],
+  "foldingStartMarker": "<(?:(?:html)|(?:css)|(?:js)|(?:backend))>",
+  "foldingStopMarker": "</(?:(?:html)|(?:css)|(?:js)|(?:backend))>"
+}
