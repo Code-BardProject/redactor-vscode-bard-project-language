@@ -1,0 +1,9 @@
+{
+  "$schema": "https://angular.io/schema/angular-json",
+  "version": 1,
+  "projects": {
+    "testgeneratorapp": {
+      "projectType": "application"
+    }
+  }
+}

@@ -419,6 +419,7 @@ This Angular output is generated from a .bard-project file. Replace content in a
     return `const express = require('express');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
+const nodemailer = require('nodemailer');
 const atlasConfig = require('./db/atlas.config');
 const customRoutes = require('./custom');
 
@@ -444,6 +445,35 @@ async function start() {
       const result = await items.insertOne(item);
       const created = await items.findOne({ _id: result.insertedId });
       res.json(created);
+    });
+
+    app.post('/api/send-email', async (req, res) => {
+      const { to, subject, text } = req.body;
+      if (!to || !subject || !text) {
+        return res.status(400).json({ error: 'Поля to, subject и text обязательны' });
+      }
+
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.example.com',
+        port: parseInt(process.env.SMTP_PORT, 10) || 587,
+        secure: false,
+        auth: {
+          user: process.env.SMTP_USER || 'user@example.com',
+          pass: process.env.SMTP_PASS || 'password'
+        }
+      });
+
+      try {
+        const info = await transporter.sendMail({
+          from: process.env.SMTP_FROM || 'no-reply@example.com',
+          to,
+          subject,
+          text
+        });
+        res.json({ status: 'ok', message: 'Письмо отправлено', info });
+      } catch (err) {
+        res.status(500).json({ error: 'Не удалось отправить письмо', message: err.message });
+      }
     });
 
     customRoutes.applyCustomRoutes(app, db);
@@ -546,7 +576,8 @@ MONGODB_DATABASE=bard_project_db
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.0",
-    "mongodb": "^5.12.0"
+    "mongodb": "^5.12.0",
+    "nodemailer": "^6.9.4"
   }
 }
 `;

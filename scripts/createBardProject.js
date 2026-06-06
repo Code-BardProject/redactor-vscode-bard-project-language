@@ -90,8 +90,9 @@ writeFile('generator/index.html', `<!DOCTYPE html>
 </head>
 <body>
   <div class="app">
-    <h1>${name} Generator</h1>
+    <h1>🚀 ${name} Generator</h1>
     <p id="status">Запуск генератора проекта...</p>
+    <div id="fileList"></div>
     <button id="generateButton">Перегенерировать проект</button>
   </div>
   <script src="js/script.js"></script>
@@ -102,19 +103,44 @@ writeFile('generator/index.html', `<!DOCTYPE html>
 writeFile('generator/js/script.js', `async function runGenerate() {
   const status = document.getElementById('status');
   const button = document.getElementById('generateButton');
+  const list = document.getElementById('fileList');
+  
   button.disabled = true;
   status.textContent = 'Генерация структуры проекта...';
+  if (list) list.innerHTML = '';
 
   try {
     const response = await fetch('/api/generate');
     const result = await response.json();
+    
     if (response.ok) {
-      status.textContent = result.message || 'Структура проекта сгенерирована.';
+      status.textContent = '✅ ' + (result.message || 'Структура проекта сгенерирована успешно');
+      status.style.color = 'green';
+      
+      // Показываем список создаваемых папок
+      if (list) {
+        const folders = [
+          'linux/', 'ios/', 'android/', 'macos/', 'windows/',
+          'web/', 'hooks/', 'locales/', 'components/', 'assets/',
+          'server/', 'generator/', 'shared/'
+        ];
+        let html = '<strong>Созданные папки и файлы:</strong><ul>';
+        folders.forEach(folder => {
+          html += '<li>' + folder + '</li>';
+        });
+        html += '<li>.gitignore</li>';
+        html += '<li>package.json</li>';
+        html += '<li>README.md</li>';
+        html += '</ul>';
+        list.innerHTML = html;
+      }
     } else {
-      status.textContent = 'Ошибка генерации: ' + (result.message || response.statusText);
+      status.textContent = '❌ Ошибка генерации: ' + (result.message || response.statusText);
+      status.style.color = 'red';
     }
   } catch (error) {
-    status.textContent = 'Ошибка генерации: ' + error.message;
+    status.textContent = '❌ Ошибка генерации: ' + error.message;
+    status.style.color = 'red';
   } finally {
     button.disabled = false;
   }
@@ -130,7 +156,57 @@ writeFile('generator/css/style.css', `.app {
   padding: 24px;
   max-width: 760px;
   margin: 0 auto;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  color: white;
 }
+
+h1 {
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+#status {
+  padding: 10px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.2);
+}
+
+#fileList {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 5px;
+}
+
+#fileList strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+#fileList ul {
+  list-style: none;
+  padding: 0;
+}
+
+#fileList li {
+  padding: 5px 0;
+  margin-left: 15px;
+}
+
+#fileList li:before {
+  content: "✓ ";
+  color: #4ade80;
+  font-weight: bold;
+}
+
 button {
   margin-top: 16px;
   padding: 12px 20px;
@@ -138,12 +214,23 @@ button {
   background: #3b82f6;
   color: white;
   font-size: 16px;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  font-weight: bold;
 }
+
+button:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
 button:disabled {
-  opacity: 0.6;
-  cursor: default;
+  background: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 `);
 
@@ -335,11 +422,65 @@ app.use(express.static(path.join(__dirname, '..', 'generator')));
 app.use('/api', require('./routes'));
 
 app.get('/api/generate', (req, res) => {
-  const generatorPage = path.join(__dirname, '..', 'generator', 'index.html');
-  if (!fs.existsSync(generatorPage)) {
-    return res.status(404).json({ status: 'error', message: 'generator/index.html не найден' });
+  try {
+    // Обновляем структуру проекта при каждом запросе
+    const projectRoot = path.dirname(__dirname); // папка проекта
+    
+    const foldersToCreate = [
+      'linux',
+      'ios',
+      'android',
+      'macos',
+      'windows',
+      'web',
+      'hooks',
+      'locales',
+      'components',
+      'assets'
+    ];
+    
+    // Создаём папки
+    foldersToCreate.forEach(folder => {
+      const folderPath = path.join(projectRoot, folder);
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+      }
+    });
+    
+    // Обновляем файлы
+    const files = {
+      'linux/.gitkeep': '',
+      'ios/.gitkeep': '',
+      'android/.gitkeep': '',
+      'macos/.gitkeep': '',
+      'windows/.gitkeep': '',
+      'web/.gitkeep': '',
+      'components/.gitkeep': '',
+      'assets/.gitkeep': ''
+    };
+    
+    Object.entries(files).forEach(([filePath, content]) => {
+      const fullPath = path.join(projectRoot, filePath);
+      const dir = path.dirname(fullPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      if (!fs.existsSync(fullPath)) {
+        fs.writeFileSync(fullPath, content, 'utf8');
+      }
+    });
+    
+    res.json({ 
+      status: 'ok', 
+      message: 'Структура проекта обновлена успешно',
+      path: projectRoot
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'error', 
+      message: 'Ошибка генерации: ' + error.message 
+    });
   }
-  res.json({ status: 'ok', message: 'Страница генератора доступна и готова.' });
 });
 
 app.post('/api/send-email', async (req, res) => {

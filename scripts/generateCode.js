@@ -234,6 +234,36 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+// Генерирование структуры проекта
+app.get('/api/generate', (req, res) => {
+  try {
+    const projectRoot = path.dirname(__dirname);
+    const foldersToCreate = [
+      'linux', 'ios', 'android', 'macos', 'windows',
+      'web', 'hooks', 'locales', 'components', 'assets'
+    ];
+    
+    foldersToCreate.forEach(folder => {
+      const folderPath = path.join(projectRoot, folder);
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+        fs.writeFileSync(path.join(folderPath, '.gitkeep'), '');
+      }
+    });
+    
+    res.json({ 
+      status: 'ok', 
+      message: 'Структура проекта обновлена успешно',
+      path: projectRoot
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'error', 
+      message: 'Ошибка генерации: ' + error.message 
+    });
+  }
+});
+
 // Обработка несуществующих маршрутов
 app.use((req, res) => {
   res.status(404).json({ 
@@ -244,6 +274,7 @@ app.use((req, res) => {
       '/api/greet?user=1',
       '/api/status',
       '/api/qrcode',
+      '/api/generate',
       '/api/send-email'
     ]
   });

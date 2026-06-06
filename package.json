@@ -90,6 +90,9 @@
     "generate:server": "node ./scripts/generateCode.js --server",
     "generate:test": "node ./scripts/generateCode.js --test"
   },
+  "dependencies": {
+    "nodemailer": "^6.9.4"
+  },
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/vscode": "^1.120.0",
