@@ -702,27 +702,218 @@ writeFile('.gitignore', `node_modules
 .env
 .DS_Store
 `);
-writeFile('README.md', `# ${name}
+writeFile('README.md', `# 🚀 ${name}
 
-Автогенерированный проект ${name}.
+Многоплатформенное приложение, созданное с помощью Bard Project Language.
 
-## Запуск сервера
+## 📋 Структура проекта
 
-	npm install
-	npm start
+\`\`\`
+${name}/
+├── 📄 package.json              # Зависимости и npm скрипты
+├── 📄 app.json                  # Конфигурация Expo
+├── 📄 babel.config.js           # Babel конфигурация
+├── 📄 metro.config.js           # Metro bundler для React Native
+├── 📄 tsconfig.json             # TypeScript конфигурация
+├── 📄 .env.example              # Переменные окружения
+│
+├── 📁 server/                   # Node.js Express сервер
+│   ├── server.js                # Точка входа сервера
+│   ├── routes/                  # API маршруты
+│   └── models/                  # MongoDB модели
+│
+├── 📱 android/                  # Android приложение (React Native)
+├── 🍎 ios/                      # iOS приложение (React Native)
+├── 🌐 web/                      # Web приложение (Angular)
+│   └── angular.json             # Angular конфигурация
+│
+├── 🐧 linux/                    # Linux приложение
+├── 🪟 windows/                  # Windows приложение
+├── 🖥️ macos/                    # macOS приложение
+│
+├── 📁 generator/                # Генератор страницы
+│   ├── index.html               # Интерактивная UI
+│   ├── js/                      # JavaScript скрипты
+│   └── css/                     # Стили
+│
+├── 📁 hooks/                    # React hooks
+├── 📁 components/               # Переиспользуемые компоненты
+├── 📁 locales/                  # Локализация (i18n)
+├── 📁 assets/                   # Изображения и иконки
+└── 📁 shared/                   # Общий код между платформами
+\`\`\`
 
-## Пример отправки почты
+## 🚀 npm Скрипты
 
-Сервер поддерживает POST-запрос на \`/api/send-email\`.
-Требуются поля JSON: \`to\`, \`subject\`, \`text\`.
+\`\`\`bash
+# Все платформы одновременно
+npm run generate
 
-Можно задать параметры SMTP через \`.env\`:
+# Конкретные платформы
+npm run generate:web             # 🌐 Angular веб-приложение
+npm run generate:android         # 📱 Android (React Native)
+npm run generate:ios             # 🍎 iOS (React Native)
+npm run generate:linux           # 🐧 Linux
+npm run generate:windows         # 🪟 Windows
+npm run generate:macos           # 🖥️ macOS
+npm run generate:server          # 🖧 Node.js сервер
+npm run generate:test            # 🧪 Тестирование API
 
-	SMTP_HOST=smtp.example.com
-	SMTP_PORT=587
-	SMTP_USER=user@example.com
-	SMTP_PASS=secret
-	SMTP_FROM=no-reply@example.com
+# Основные команды
+npm install                      # Установка зависимостей
+npm start                        # Запуск сервера на порту 3000
+npm run dev                      # Запуск с nodemon (автоперезагрузка)
+\`\`\`
+
+## 🖧 Запуск сервера
+
+\`\`\`bash
+# Установить зависимости
+npm install
+
+# Запустить сервер (автоматически выберет свободный порт)
+npm start
+
+# Результат:
+# ✅ Сервер запущен: http://localhost:3000
+# ✅ Генератор: http://localhost:3000
+# ✅ API доступна: http://localhost:3000/api/
+\`\`\`
+
+## 🌐 API Примеры
+
+### Получить приветствие
+\`\`\`bash
+curl http://localhost:3000/api/greet?user=1
+\`\`\`
+
+**Ответ:**
+\`\`\`json
+{
+  "message": "Добро пожаловать в приложение!",
+  "users": [...],
+  "total": 5
+}
+\`\`\`
+
+### Статус сервера
+\`\`\`bash
+curl http://localhost:3000/api/status
+\`\`\`
+
+### QR-код для подключения
+\`\`\`bash
+curl http://localhost:3000/api/qrcode
+\`\`\`
+
+### Отправить письмо
+\`\`\`bash
+curl -X POST http://localhost:3000/api/send-email \\
+  -H "Content-Type: application/json" \\
+  -d '{"to":"user@example.com","subject":"Test","text":"Hello"}'
+\`\`\`
+
+## 🔧 Конфигурация .env
+
+\`\`\`bash
+# Порт сервера (по умолчанию 3000)
+PORT=3000
+
+# MongoDB Atlas
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/database?retryWrites=true&w=majority
+
+# SMTP для отправки писем
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=user@example.com
+SMTP_PASS=password
+SMTP_FROM=noreply@example.com
+
+# API ключи
+API_KEY=your-api-key-here
+API_SECRET=your-api-secret-here
+\`\`\`
+
+## 📱 Запуск на разных платформах
+
+### React Native (Android, iOS, Web)
+\`\`\`bash
+cd ${name}
+npm install
+
+# Запустить с Expo
+npx expo start
+
+# Выберите платформу:
+# a - Android
+# i - iOS
+# w - Web
+\`\`\`
+
+### Web (Angular)
+\`\`\`bash
+cd ${name}/web
+npm install
+npm start
+
+# Откройте http://localhost:4200
+\`\`\`
+
+### Node.js Сервер
+\`\`\`bash
+cd ${name}
+npm install
+npm start
+
+# Откройте http://localhost:3000
+\`\`\`
+
+## 📦 Установленные зависимости
+
+- **express** - веб-фреймворк
+- **mongoose** - MongoDB ODM
+- **nodemailer** - отправка писем
+- **qrcode** - генерирование QR-кодов
+- **axios** - HTTP клиент
+- **cors** - CORS поддержка
+- **dotenv** - переменные окружения
+- **nodemon** - автоперезагрузка при разработке
+- **typescript** - типизация
+
+## 🚀 Развертывание
+
+### Heroku
+\`\`\`bash
+heroku create ${name}
+git push heroku master
+\`\`\`
+
+### AWS
+\`\`\`bash
+# EB CLI
+eb create ${name}-env
+eb deploy
+\`\`\`
+
+### DigitalOcean / Google Cloud
+Развертывается как обычное Node.js приложение.
+
+## 📚 Документация
+
+- [Bard Project Language](https://github.com/Code-BardProject/redactor-vscode-bard-project-language)
+- [Express.js](https://expressjs.com/)
+- [React Native](https://reactnative.dev/)
+- [MongoDB](https://docs.mongodb.com/)
+
+## 🤝 Поддержка
+
+Если у вас есть вопросы или проблемы, создайте issue в репозитории.
+
+---
+
+**Последнее обновление:** ${new Date().toLocaleDateString('ru-RU')}
+**Версия:** 1.0.0
+\`
 `);
 
 writeFile('.env.example', `# Порт сервера
