@@ -684,3 +684,21 @@ git add .
 git commit уже был сделан
 git push -f origin master:main
 master теперь отслеживает origin/main
+
+
+
+
+
+
+
+
+
+
+npm run generate — все платформы
+npm run generate:web — Angular веб
+npm run generate:android — React Native Android
+npm run generate:ios — React Native iOS
+npm run generate:linux — Linux
+npm run generate:windows — Windows
+npm run generate:macos — macOS
+npm run generate:test — Тест API
