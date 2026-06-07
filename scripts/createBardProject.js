@@ -603,24 +603,79 @@ writeFile('shared/index.ts', `export const shared = {
   appName: '${name}',
 };
 `);
-writeFile('.env.example', `PORT=3000
-MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.mongodb.net/${name.toLowerCase()}?retryWrites=true&w=majority
+
+writeFile('app.json', `{
+  "expo": {
+    "name": "${name}",
+    "slug": "${name.toLowerCase().replace(/\s+/g, '-')}",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    }
+  }
+}
 `);
+
+writeFile('babel.config.js', `module.exports = function(api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+  };
+};
+`);
+
+writeFile('metro.config.js', `const { getDefaultConfig } = require('expo/metro-config');
+
+module.exports = getDefaultConfig(__dirname);
+`);
+
+writeFile('tsconfig.json', `{
+  "extends": "expo/tsconfig",
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
+`);
+
 writeFile('package.json', `{
   "name": "${name.toLowerCase().replace(/\s+/g, '-')}",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
+    "dev": "nodemon server/server.js",
+    "test": "echo \\"Error: no test specified\\" && exit 1"
   },
   "dependencies": {
-    "express": "^4.18.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mongoose": "^7.5.0",
+    "nodemailer": "^6.9.6",
     "qrcode": "^1.5.3",
-    "nodemailer": "^6.9.4"
+    "axios": "^1.5.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   }
 }
 `);
@@ -656,6 +711,24 @@ writeFile('README.md', `# ${name}
 	SMTP_USER=user@example.com
 	SMTP_PASS=secret
 	SMTP_FROM=no-reply@example.com
+`);
+
+writeFile('.env.example', `# Порт сервера
+PORT=3000
+
+# MongoDB
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/database?retryWrites=true&w=majority
+
+# SMTP для Email
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=user@example.com
+SMTP_PASS=password
+SMTP_FROM=noreply@example.com
+
+# API
+API_KEY=your-api-key-here
+API_SECRET=your-api-secret-here
 `);
 
 console.log(`Проект ${name} создан в ${root}`);

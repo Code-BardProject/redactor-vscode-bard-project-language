@@ -48,6 +48,84 @@ npm run vscode:prepublish
 npm run create-bard-project
 ```
 
+## 🚀 Быстрый старт - Создание и запуск проектов
+
+### 1️⃣ Создание нового проекта
+
+```bash
+# Из папки расширения
+npm run create-bard-project MyApp
+
+# Или используя npx (после публикации на npm)
+npx create-bard-project MyApp
+
+# Или используя глобальную установку
+npm install -g .
+create-bard-project MyApp
+```
+
+После создания проекта в нем будут все необходимые платформы.
+
+### 2️⃣ React Native + Expo (Android, iOS, Web)
+
+```bash
+cd MyApp
+
+# Установка зависимостей
+npm install
+
+# Запуск с Expo (выберите платформу: a=Android, i=iOS, w=Web)
+npx expo start
+# или
+npm start
+
+# Запуск на конкретной платформе
+npx expo start --android    # 📱 Android
+npx expo start --ios        # 🍎 iOS
+npx expo start --web        # 🌐 Web
+```
+
+### 3️⃣ Angular (Веб-приложение)
+
+```bash
+cd MyApp/web
+
+# Установка зависимостей
+npm install
+
+# Запуск разработки (http://localhost:4200)
+npm start
+
+# Или использование angular-cli напрямую
+ng serve
+```
+
+### 4️⃣ Node.js + Express + MongoDB Atlas
+
+```bash
+cd MyApp/server
+
+# Установка зависимостей
+npm install
+
+# Запуск сервера (http://localhost:3000)
+npm start
+
+# Или разработка с hot-reload
+npm run dev
+```
+
+### 5️⃣ Web (HTML/CSS/JS)
+
+```bash
+cd MyApp/web
+
+# Запуск простого сервера
+python -m http.server 8000
+# или
+npx http-server
+```
+
 ## 🏗️ Архитектура проекта
 
 ```

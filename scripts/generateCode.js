@@ -555,15 +555,24 @@ module.exports = {};
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "test": "echo \\"Error: no test specified\\" && exit 1"
   },
   "dependencies": {
     "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mongoose": "^7.5.0",
+    "nodemailer": "^6.9.6",
     "qrcode": "^1.5.3",
-    "nodemailer": "^6.9.4"
+    "axios": "^1.5.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   }
 }
 `);
