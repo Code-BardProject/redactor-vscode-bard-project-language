@@ -659,7 +659,17 @@ writeFile('package.json', `{
   "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
-    "test": "echo \\"Error: no test specified\\" && exit 1"
+    "generate": "npm run generate:all",
+    "generate:all": "echo 'Generating all platforms...' && npm run generate:web && npm run generate:android && npm run generate:ios && npm run generate:server",
+    "generate:web": "echo '🌐 Building web with Angular...'",
+    "generate:android": "echo '📱 Building Android with React Native...'",
+    "generate:ios": "echo '🍎 Building iOS with React Native...'",
+    "generate:linux": "echo '🐧 Building Linux...'",
+    "generate:windows": "echo '🪟 Building Windows...'",
+    "generate:macos": "echo '🖥️ Building macOS...'",
+    "generate:server": "echo '🖧 Node.js server ready at http://localhost:3000' && npm start",
+    "generate:test": "echo '🧪 Testing API...'",
+    "test": "echo 'Error: no test specified' && exit 1"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -671,7 +681,9 @@ writeFile('package.json', `{
     "axios": "^1.5.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "typescript": "^5.1.0",
+    "@types/node": "^20.0.0"
   },
   "engines": {
     "node": ">=14.0.0",

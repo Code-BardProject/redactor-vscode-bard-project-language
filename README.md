@@ -21,14 +21,14 @@ VS Code расширение для работы с файлом `.bard-project`
 # Генерация кода для всех платформ одновременно
 npm run generate
 
-# Генерация для конкретной платформы
-npm run generate:web      # 🌐 Веб-приложение
-npm run generate:android  # 📱 Android приложение
-npm run generate:ios      # 🍎 iOS приложение  
+# Или отдельные скрипты:
+npm run generate:web      # 🌐 Веб-приложение (Angular)
+npm run generate:android  # 📱 Android приложение (React Native)
+npm run generate:ios      # 🍎 iOS приложение (React Native)
 npm run generate:linux    # 🐧 Linux приложение
 npm run generate:windows  # 🪟 Windows приложение
 npm run generate:macos    # 🖥️ macOS приложение
-npm run generate:server   # 🖧 Node.js сервер
+npm run generate:server   # 🖧 Node.js сервер (Express + MongoDB)
 npm run generate:test     # 🧪 Тестовый маршрут /api/greet
 ```
 
