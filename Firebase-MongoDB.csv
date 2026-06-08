@@ -1,0 +1,226 @@
+Важное замечание:
+Firebase Auth отлично работает «из коробки» для регистрации, логина и Google.
+MongoDB Atlas напрямую из React Native подключать не рекомендуется (опасно и сложно). Лучше использовать backend (Node.js + Express) или MongoDB Realm (Atlas Device SDK).
+Я дам тебе:
+
+Формы с Firebase (рекомендуемый вариант)
+Пример с MongoDB через backend (простой REST API)
+
+Регистрации (Email + Password)
+Авторизации / Входа (Email + Password)
+Входа через Google (Firebase Auth)
+Сохранение дополнительных данных пользователя в MongoDB Atlas (через backend API)
+
+
+1. Установка необходимых пакетов
+Bashnpm install @react-native-firebase/app @react-native-firebase/auth @react-native-firebase/firestore
+npm install @react-native-google-signin/google-signin
+npm install axios   # для запросов к твоему backend (MongoDB)
+npm install react-hook-form zod
+
+2. Формы регистрации и входа (один удобный компонент)
+screens/AuthScreen.tsx
+tsximport React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import axios from 'axios';
+
+const schema = z.object({
+  email: z.string().email('Неверный email'),
+  password: z.string().min(6, 'Пароль минимум 6 символов'),
+});
+
+type FormData = z.infer<typeof schema>;
+
+const AuthScreen = () => {
+  const [isLogin, setIsLogin] = useState(true); // true = вход, false = регистрация
+  const [loading, setLoading] = useState(false);
+
+  const { control, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
+
+  // === Email/Password Регистрация ===
+  const onRegister = async (data: FormData) => {
+    setLoading(true);
+    try {
+      const userCredential = await auth().createUserWithEmailAndPassword(data.email, data.password);
+      const user = userCredential.user;
+
+      // Сохраняем данные в MongoDB Atlas через твой backend
+      await saveUserToMongoDB(user.uid, user.email, 'email');
+
+      Alert.alert('Успех', 'Регистрация прошла успешно!');
+    } catch (error: any) {
+      Alert.alert('Ошибка', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // === Email/Password Вход ===
+  const onLogin = async (data: FormData) => {
+    setLoading(true);
+    try {
+      const userCredential = await auth().signInWithEmailAndPassword(data.email, data.password);
+      console.log('Вход выполнен:', userCredential.user);
+      // Переход на главный экран
+    } catch (error: any) {
+      Alert.alert('Ошибка', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // === Вход через Google ===
+  const signInWithGoogle = async () => {
+    setLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { idToken } = await GoogleSignin.signIn();
+
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+      const user = userCredential.user;
+
+      await saveUserToMongoDB(user.uid, user.email, 'google');
+
+      Alert.alert('Успех', `Добро пожаловать, ${user.displayName}`);
+    } catch (error: any) {
+      Alert.alert('Ошибка Google', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Сохранение пользователя в MongoDB Atlas
+  const saveUserToMongoDB = async (uid: string, email: string | null, provider: string) => {
+    try {
+      await axios.post('https://твой-backend.com/api/users', {
+        uid,
+        email,
+        provider,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.log('Не удалось сохранить в MongoDB', e);
+    }
+  };
+
+  const onSubmit = (data: FormData) => {
+    if (isLogin) onLogin(data);
+    else onRegister(data);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{isLogin ? 'Вход' : 'Регистрация'}</Text>
+
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={value}
+            onChangeText={onChange}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        )}
+      />
+      {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            style={styles.input}
+            placeholder="Пароль"
+            value={value}
+            onChangeText={onChange}
+            secureTextEntry
+          />
+        )}
+      />
+      {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={handleSubmit(onSubmit)}
+        disabled={loading}
+      >
+        {loading ? <ActivityIndicator color="#fff" /> : (
+          <Text style={styles.buttonText}>
+            {isLogin ? 'Войти' : 'Зарегистрироваться'}
+          </Text>
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
+        <Text style={styles.switchText}>
+          {isLogin ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.googleButton} onPress={signInWithGoogle}>
+        <Text style={styles.googleText}>Войти через Google</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, marginBottom: 10, borderRadius: 8 },
+  button: { backgroundColor: '#667eea', padding: 15, borderRadius: 8, alignItems: 'center', marginTop: 10 },
+  buttonText: { color: 'white', fontWeight: 'bold' },
+  googleButton: { backgroundColor: '#DB4437', padding: 15, borderRadius: 8, alignItems: 'center', marginTop: 15 },
+  googleText: { color: 'white', fontWeight: 'bold' },
+  switchText: { textAlign: 'center', marginTop: 15, color: '#667eea' },
+  error: { color: 'red', marginBottom: 10 },
+});
+
+export default AuthScreen;
+
+ 
+
+Настроить GoogleSignin.configure({ webClientId: '...' }) в App.tsx
+Создать backend (Node.js + Express + Mongoose) для MongoDB Atlas
+Добавить Protected Routes в навигации
+
+ 
+
+Код для backend (MongoDB Atlas)
+Полный App.tsx с навигацией
+ 
+
+ 
+
+название проекта/  auth/
+│   ├── AuthScreen.tsx Формы подключение  регистрации и входа (один удобный компонент) через Google (Firebase Auth) и Сохранение дополнительных данных пользователя в MongoDB Atlas (через backend API)
+│   ├── Firebase.info # Информация о настройке Firebase
+│   ├── MongoDB.info # Информация о настройке MongoDB Atlas
+│   ├── RegistrationForm.tsx # Форма регистрации (Email + Password)
+│   ├── LoginForm.tsx # Форма входа (Email + Password)
+│   ├── verification-email.tsx # Компонент для отправки письма с подтверждением email
+│   ├── I forgot my password.tsx # Компонент для восстановления пароля
+│   ├──
+│   ├──
+
+
+
+│   └── components/
+│       └── visual-card.js

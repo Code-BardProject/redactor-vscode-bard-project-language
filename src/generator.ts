@@ -43,9 +43,8 @@ export class BardGenerator {
   private async askProjectTargets(): Promise<string[] | undefined> {
     const options: vscode.QuickPickItem[] = [
       { label: 'React Native', description: 'Mobile Android / iOS / Windows / macOS' },
-      { label: 'Web', description: 'Browser application output' },
       { label: 'Node.js Backend', description: 'Express server with MongoDB Atlas support' },
-      { label: 'Full Workspace', description: 'All targets together' }
+      { label: 'Full Workspace', description: 'React Native + Node.js Backend together' }
     ];
 
     const selection = await vscode.window.showQuickPick(options, {
@@ -59,7 +58,7 @@ export class BardGenerator {
 
     const selected = selection.map(item => item.label);
     if (selected.includes('Full Workspace')) {
-      return ['React Native', 'Web', 'Node.js Backend'];
+      return ['React Native', 'Node.js Backend'];
     }
 
     return selected;
@@ -522,6 +521,6 @@ MONGODB_DATABASE=bard_project_db
   }
 
   private rootReadmeTemplate(targets: string[]) {
-    return `# Bard Project Workspace\n\nGenerated targets: ${targets.join(', ')}.\n\n## How to use\n\n- Open the workspace in VS Code.\n- Edit your .bard-project file.\n- Run the command "Bard Project: Generate React Native / Node.js" to update generated targets.\n\n## Project targets\n\n${targets.includes('React Native') ? '- React Native mobile app: Android, iOS, Windows, macOS\\n' : ''}${targets.includes('Web') ? '- Static web app\\n' : ''}${targets.includes('Node.js Backend') ? '- Node.js backend with MongoDB Atlas support\\n' : ''}`;
+    return `# Bard Project Workspace\n\nGenerated targets: ${targets.join(', ')}.\n\n## How to use\n\n- Open the workspace in VS Code.\n- Edit your .bard-project file.\n- Run the command "Bard Project: Generate React Native / Node.js" to update generated targets.\n\n## Project targets\n\n${targets.includes('React Native') ? '- React Native mobile app: Android, iOS, Windows, macOS\\n' : ''}${targets.includes('Node.js Backend') ? '- Node.js backend with MongoDB Atlas support\\n' : ''}`;
   }
 }

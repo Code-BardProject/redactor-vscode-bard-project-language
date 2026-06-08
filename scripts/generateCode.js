@@ -5,11 +5,7 @@ const path = require('path');
 const args = process.argv.slice(2);
 const flags = {
   web: false,
-  android: false,
-  ios: false,
-  linux: false,
-  windows: false,
-  macos: false,
+  reactNative: false,
   server: false,
   test: false,
   all: false
@@ -18,11 +14,12 @@ const flags = {
 args.forEach(arg => {
   switch (arg) {
     case '--web': case '-o': flags.web = true; break;
-    case '--android': case '-a': flags.android = true; break;
-    case '--ios': case '-i': flags.ios = true; break;
-    case '--linux': case '-l': flags.linux = true; break;
-    case '--windows': case '-w': flags.windows = true; break;
-    case '--macos': case '-m': flags.macos = true; break;
+    case '--react-native': case '-r': flags.reactNative = true; break;
+    case '--android': case '-a': flags.reactNative = true; break;
+    case '--ios': case '-i': flags.reactNative = true; break;
+    case '--linux': case '-l': flags.reactNative = true; break;
+    case '--windows': case '-w': flags.reactNative = true; break;
+    case '--macos': case '-m': flags.reactNative = true; break;
     case '--server': case '-s': flags.server = true; break;
     case '--test': case '-t': flags.test = true; break;
     case '--all': flags.all = true; break;
@@ -32,7 +29,8 @@ args.forEach(arg => {
 
 const useAll = Object.values(flags).every(value => value === false);
 if (useAll) {
-  flags.all = true;
+  flags.reactNative = true;
+  flags.server = true;
 }
 
 if (flags.test) {
@@ -114,30 +112,141 @@ p {
 `);
 }
 
-function createPlatform(name) {
-  log(`Генерация ${name}...`);
-  ensureDir(`${name}`);
-  writeFile(`${name}/App.js`, `import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+function createReactNative() {
+  log('Генерация React Native приложения...');
+  ensureDir('react-native');
+  ensureDir('react-native/components');
+  ensureDir('react-native/screens');
+  ensureDir('react-native/navigation');
+  ensureDir('react-native/assets');
+
+  writeFile('react-native/App.tsx', `import React from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import VisualCard from './components/VisualCard';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>${projectName} ${name}</Text>
+    <SafeAreaView style={styles.page}>
+      <View style={styles.container}>
+        <Text style={styles.title}>${projectName} React Native</Text>
+        <VisualCard title="Bard Project" description="React Native app generated from Bard Project." />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  page: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  title: { fontSize: 26, fontWeight: '700', marginBottom: 16 }
+});
+`);
+
+  writeFile('react-native/components/VisualCard.tsx', `import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function VisualCard({ title, description }: { title: string; description: string }) {
+  return (
+    <View style={styles.card}>
+      <Text style={styles.heading}>{title}</Text>
+      <Text style={styles.body}>{description}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center', alignItems: 'center' }, title: { fontSize: 24 } });
+const styles = StyleSheet.create({
+  card: {
+    width: '100%',
+    backgroundColor: '#f8fafc',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  heading: { fontSize: 20, fontWeight: '700', marginBottom: 8 },
+  body: { color: '#475569', lineHeight: 20 },
+});
+`);
+
+  writeFile('react-native/package.json', `{
+  "name": "${projectName.toLowerCase().replace(/\s+/g, '-')}-rn",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "react-native start",
+    "android": "npx react-native run-android",
+    "ios": "npx react-native run-ios"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.72.0",
+    "@react-native-async-storage/async-storage": "^3.1.1",
+    "@react-native-firebase/app": "^24.1.0",
+    "@react-native-firebase/auth": "^24.1.0",
+    "@react-native-firebase/firestore": "^24.1.0",
+    "@react-native-google-signin/google-signin": "^16.1.2",
+    "@react-navigation/bottom-tabs": "^7.17.0",
+    "@react-navigation/native": "^7.2.6",
+    "@react-navigation/native-stack": "^7.17.0",
+    "axios": "^1.5.0",
+    "react-hook-form": "^7.78.0",
+    "zod": "^4.4.3",
+    "react-native-fast-image": "^8.6.3",
+    "react-native-gesture-handler": "^3.0.0",
+    "react-native-image-picker": "^8.2.1",
+    "react-native-linear-gradient": "^2.8.3",
+    "react-native-maps": "^1.27.2",
+    "react-native-mmkv": "^4.3.1",
+    "react-native-reanimated": "^4.4.1",
+    "react-native-safe-area-context": "^5.8.0",
+    "react-native-screens": "^4.25.2",
+    "react-native-svg": "^15.15.5",
+    "react-native-toast-message": "^2.3.3",
+    "react-native-vector-icons": "^10.3.0",
+    "react-native-video": "^6.19.2",
+    "react-native-webview": "^13.16.1",
+    "zustand": "^5.0.14",
+    "react-redux": "^9.3.0",
+    "@reduxjs/toolkit": "^2.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.10",
+    "@babel/runtime": "^7.22.10",
+    "metro-react-native-babel-preset": "^0.76.9",
+    "typescript": "^5.5.0",
+    "@types/react": "^18.3.0",
+    "@types/react-native": "^0.72.0"
+  }
+}
+`);
+
+  writeFile('react-native/babel.config.js', `module.exports = {
+  presets: ['module:metro-react-native-babel-preset'],
+};
+`);
+
+  writeFile('react-native/tsconfig.json', `{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "jsx": "react-native",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "useDefineForClassFields": true
+  },
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]
+}
 `);
 }
 
-if (flags.all || flags.android) createPlatform('android');
-if (flags.all || flags.ios) createPlatform('ios');
-if (flags.all || flags.linux) createPlatform('linux');
-if (flags.all || flags.windows) createPlatform('windows');
-if (flags.all || flags.macos) createPlatform('macos');
-
+if (flags.all || flags.reactNative) createReactNative();
 if (flags.all || flags.server) {
   log('Генерация сервера...');
   ensureDir('server/routes');
