@@ -1,7 +1,7 @@
 {
   "name": "create-bard-project",
   "displayName": "Bard Project Language",
-  "description": "VS Code extension and CLI for .bard-project language with project scaffolding for React Native, Angular, Node.js and MongoDB Atlas.",
+  "description": "VS Code extension and CLI for .bard-project language with project scaffolding for React Native, Node.js and MongoDB Atlas.",
   "version": "0.0.1",
   "publisher": "bard-project",
   "repository": {
@@ -16,7 +16,6 @@
     "bard-project",
     "code-generator",
     "react-native",
-    "angular",
     "nodejs",
     "mongodb-atlas",
     "cli"
@@ -67,7 +66,7 @@
       },
       {
         "command": "bard-project.generateTargets",
-        "title": "Bard Project: Generate React Native / Angular / Node.js"
+        "title": "Bard Project: Generate React Native / Node.js"
       },
       {
         "command": "bard-project.openProjectGuide",

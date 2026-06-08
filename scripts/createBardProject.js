@@ -46,7 +46,8 @@ const folders = [
   'linux',
   'windows',
   'macos',
-  'web/src/app',
+  'web',
+  'web/components',
   'server/routes',
   'server/models',
   'shared'
@@ -376,22 +377,55 @@ export default function MacOSApp() {
 const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center', alignItems: 'center' }, title: { fontSize: 24 } });
 `);
 
-writeFile('web/src/app/app.component.ts', `import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  template: '<h1>${name} Web</h1>',
-  styles: ['h1 { font-family: Arial, sans-serif; }']
-})
-export class AppComponent {}
+writeFile('web/index.html', `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${name} Web</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <h1>${name} Web</h1>
+    <p>Generated static web page from Bard Project.</p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
 `);
-writeFile('web/angular.json', `{
-  "$schema": "https://angular.io/schema/angular-json",
-  "version": 1,
-  "projects": {
-    "${name.toLowerCase()}": {
-      "projectType": "application"
-    }
+writeFile('web/styles.css', `.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+h1 {
+  font-size: 36px;
+  margin: 0 0 10px 0;
+}
+
+p {
+  font-size: 18px;
+  opacity: 0.9;
+}
+`);
+writeFile('web/script.js', `console.log('Welcome to ${name} Web');
+`);
+writeFile('web/package.json', `{
+  "name": "${name.toLowerCase().replace(/\s+/g, '-')}-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
   }
 }
 `);
@@ -661,7 +695,7 @@ writeFile('package.json', `{
     "dev": "nodemon server/server.js",
     "generate": "npm run generate:all",
     "generate:all": "echo 'Generating all platforms...' && npm run generate:web && npm run generate:android && npm run generate:ios && npm run generate:server",
-    "generate:web": "echo '🌐 Building web with Angular...'",
+    "generate:web": "echo '🌐 Building web...'",
     "generate:android": "echo '📱 Building Android with React Native...'",
     "generate:ios": "echo '🍎 Building iOS with React Native...'",
     "generate:linux": "echo '🐧 Building Linux...'",
@@ -724,8 +758,8 @@ ${name}/
 │
 ├── 📱 android/                  # Android приложение (React Native)
 ├── 🍎 ios/                      # iOS приложение (React Native)
-├── 🌐 web/                      # Web приложение (Angular)
-│   └── angular.json             # Angular конфигурация
+├── 🌐 web/                      # Static web приложение
+│   └── package.json            # Веб-сборка
 │
 ├── 🐧 linux/                    # Linux приложение
 ├── 🪟 windows/                  # Windows приложение
@@ -750,7 +784,7 @@ ${name}/
 npm run generate
 
 # Конкретные платформы
-npm run generate:web             # 🌐 Angular веб-приложение
+npm run generate:web             # 🌐 Web приложение
 npm run generate:android         # 📱 Android (React Native)
 npm run generate:ios             # 🍎 iOS (React Native)
 npm run generate:linux           # 🐧 Linux
@@ -850,13 +884,13 @@ npx expo start
 # w - Web
 \`\`\`
 
-### Web (Angular)
+### Web (Static Web)
 \`\`\`bash
 cd ${name}/web
 npm install
 npm start
 
-# Откройте http://localhost:4200
+# Откройте http://localhost:5000
 \`\`\`
 
 ### Node.js Сервер

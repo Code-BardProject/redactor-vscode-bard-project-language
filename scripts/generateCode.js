@@ -57,23 +57,58 @@ function log(msg) {
 
 if (flags.all || flags.web) {
   log('Генерация web...');
-  ensureDir('web/src/app');
-  writeFile('web/src/app/app.component.ts', `import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  template: '<h1>${projectName} Web</h1>',
-  styles: ['h1 { font-family: Arial, sans-serif; }']
-})
-export class AppComponent {}
+  ensureDir('web');
+  writeFile('web/index.html', `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${projectName} Web</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <h1>${projectName} Web</h1>
+    <p>Generated static web page from Bard Project.</p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
 `);
-  writeFile('web/angular.json', `{
-  "$schema": "https://angular.io/schema/angular-json",
-  "version": 1,
-  "projects": {
-    "${projectName.toLowerCase()}": {
-      "projectType": "application"
-    }
+  writeFile('web/styles.css', `.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 32px;
+}
+
+h1 {
+  font-size: 36px;
+  margin: 0 0 10px;
+}
+
+p {
+  font-size: 18px;
+  opacity: 0.9;
+}
+`);
+  writeFile('web/script.js', `console.log('Welcome to ${projectName} Web');
+`);
+  writeFile('web/package.json', `{
+  "name": "${projectName.toLowerCase().replace(/\s+/g, '-')}-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
   }
 }
 `);
@@ -558,7 +593,7 @@ module.exports = {};
     "dev": "nodemon server.js",
     "generate": "npm run generate:all",
     "generate:all": "echo 'Generating all platforms...' && npm start",
-    "generate:web": "echo '🌐 Building web with Angular...'",
+    "generate:web": "echo '🌐 Building web...'",
     "generate:android": "echo '📱 Building Android with React Native...'",
     "generate:ios": "echo '🍎 Building iOS with React Native...'",
     "generate:linux": "echo '🐧 Building Linux...'",

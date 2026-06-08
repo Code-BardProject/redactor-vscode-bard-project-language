@@ -7,7 +7,6 @@ VS Code расширение для работы с файлом `.bard-project`
 - ✅ Язык `bard-project` с подсветкой синтаксиса
 - ✅ Генерация проектов для **React Native** (Android, iOS, Windows, macOS)
 - ✅ Генерация веб-приложений (HTML/CSS/JS)
-- ✅ Генерация Angular приложений
 - ✅ Генерация Node.js сервера с Express и MongoDB Atlas
 - ✅ QR-код для подключения устройств
 - ✅ Автоматическая обработка занятых портов
@@ -101,7 +100,7 @@ npm start
 npm run generate
 
 # Или отдельные скрипты:
-npm run generate:web      # 🌐 Веб-приложение (Angular)
+npm run generate:web      # 🌐 Веб-приложение
 npm run generate:android  # 📱 Android приложение (React Native)
 npm run generate:ios      # 🍎 iOS приложение (React Native)
 npm run generate:linux    # 🐧 Linux приложение
@@ -173,7 +172,7 @@ npx expo start --ios        # 🍎 iOS
 npx expo start --web        # 🌐 Web
 ```
 
-### 3️⃣ Angular (Веб-приложение)
+### 3️⃣ Web (Веб-приложение)
 
 ```bash
 cd MyApp/web
@@ -181,11 +180,10 @@ cd MyApp/web
 # Установка зависимостей
 npm install
 
-# Запуск разработки (http://localhost:4200)
+# Запуск статического веб-сервера
 npm start
 
-# Или использование angular-cli напрямую
-ng serve
+# Откройте http://localhost:5000
 ```
 
 ### 4️⃣ Node.js + Express + MongoDB Atlas
@@ -357,7 +355,7 @@ my-project/
 1. **Откройте файл `.bard-project`**
 2. **Запустите команду** (Ctrl+Shift+P):
    - `Bard Project: Create Project` - создать новый проект
-   - `Bard Project: Generate React Native / Angular / Node.js` - генерировать код из текущего файла
+   - `Bard Project: Generate React Native / Node.js` - генерировать код из текущего файла
 
 ### В командной строке
 
@@ -783,7 +781,7 @@ master теперь отслеживает origin/main
 
 
 npm run generate — все платформы
-npm run generate:web — Angular веб
+npm run generate:web — Web приложение
 npm run generate:android — React Native Android
 npm run generate:ios — React Native iOS
 npm run generate:linux — Linux
