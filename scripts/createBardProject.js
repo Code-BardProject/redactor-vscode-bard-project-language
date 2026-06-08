@@ -612,57 +612,75 @@ export default function MacOSApp() {
 const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center', alignItems: 'center' }, title: { fontSize: 24 } });
 `);
 
-writeFile('web/index.html', `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${name} Web</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="app">
-    <h1>${name} Web</h1>
-    <p>Generated static web page from Bard Project.</p>
-  </div>
-  <script src="script.js"></script>
-</body>
-</html>
-`);
-writeFile('web/styles.css', `.app {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+writeFile('web/App.js', `/**
+ * web/App.js - React Native Web Application
+ * Main entry point for web platform
+ * This file is part of React Native Web setup
+ */
+
+import React from 'react';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+
+export default function App() {
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>${name}</Text>
+        <Text style={styles.subtitle}>React Native Web Application</Text>
+      </View>
+
+      <View style={styles.content}>
+        <Text style={styles.text}>🚀 Welcome to your web app</Text>
+        <Text style={styles.text}>Powered by React Native Web + Expo</Text>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>© 2024 ${name}</Text>
+      </View>
+    </ScrollView>
+  );
 }
 
-h1 {
-  font-size: 36px;
-  margin: 0 0 10px 0;
-}
-
-p {
-  font-size: 18px;
-  opacity: 0.9;
-}
-`);
-writeFile('web/script.js', `console.log('Welcome to ${name} Web');
-`);
-writeFile('web/package.json', `{
-  "name": "${name.toLowerCase().replace(/\s+/g, '-')}-web",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "start": "npx serve ."
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    backgroundColor: '#f5f5f5',
   },
-  "dependencies": {
-    "serve": "^14.0.1"
-  }
-}
+  header: {
+    backgroundColor: '#667eea',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 10,
+  },
+  content: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 18,
+    marginVertical: 10,
+    color: '#333',
+  },
+  footer: {
+    padding: 20,
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+  },
+  footerText: {
+    color: '#666',
+  },
+});
 `);
 
 writeFile('server/server.js', `const express = require('express');
@@ -729,7 +747,16 @@ app.get('/api/generate', (req, res) => {
       'android/.gitkeep': '',
       'macos/.gitkeep': '',
       'windows/.gitkeep': '',
-      'web/.gitkeep': '',
+      'web/App.js': \`import React from 'react';
+
+export default function App() {
+  return (
+    <div>
+      <h1>Welcome to ${name} Web App</h1>
+      <p>React Native Web Application</p>
+    </div>
+  );
+}\`,
       'components/.gitkeep': '',
       'assets/.gitkeep': ''
     };
@@ -817,12 +844,45 @@ app.use((req, res) => {
     error: 'Маршрут не найден',
     path: req.path,
     availableRoutes: ['/', '/api/greet?user=1', '/api/users', '/api/status', '/api/qrcode', '/api/send-email']
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Маршрут не найден',
+    path: req.path,
+    availableRoutes: ['/', '/api/greet?user=1', '/api/users', '/api/status', '/api/qrcode', '/api/send-email']
   });
 });
 
-app.listen(port, () => {
-  console.log('Server running on http://localhost:' + port);
-});
+// Функция для поиска доступного порта
+const findAvailablePort = (startPort, maxAttempts = 5) => {
+  return new Promise((resolve) => {
+    let currentPort = startPort;
+    let attempts = 0;
+
+    const tryListen = () => {
+      const server = app.listen(currentPort, () => {
+        console.log('✅ Server running on http://localhost:' + currentPort);
+        resolve(currentPort);
+      });
+
+      server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE' && attempts < maxAttempts) {
+          currentPort++;
+          attempts++;
+          tryListen();
+        } else {
+          console.error('❌ Failed to find available port:', err.message);
+          process.exit(1);
+        }
+      });
+    };
+
+    tryListen();
+  });
+};
+
+// Запуск с автоматическим поиском порта
+const initialPort = process.env.PORT || 3000;
+findAvailablePort(parseInt(initialPort, 10));
 `);
 writeFile('server/routes/index.js', `const express = require('express');
 const router = express.Router();
@@ -1256,7 +1316,12 @@ writeFile('package.json', `{
   "private": true,
   "scripts": {
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
+    "dev": "concurrently \\"npm run server\\" \\"npm run app\\"",
+    "server": "nodemon server/server.js",
+    "app": "expo start",
+    "web": "expo start --web",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
     "generate": "npm run generate:all",
     "generate:all": "echo 'Generating all platforms...' && npm run generate:web && npm run generate:android && npm run generate:ios && npm run generate:server",
     "generate:web": "echo '🌐 Building web...'",
@@ -1265,7 +1330,7 @@ writeFile('package.json', `{
     "generate:linux": "echo '🐧 Building Linux...'",
     "generate:windows": "echo '🪟 Building Windows...'",
     "generate:macos": "echo '🖥️ Building macOS...'",
-    "generate:server": "echo '🖧 Node.js server ready at http://localhost:3000' && npm start",
+    "generate:server": "echo '🖧 Node.js server ready' && npm start",
     "generate:test": "echo '🧪 Testing API...'",
     "test": "echo 'Error: no test specified' && exit 1"
   },
@@ -1276,12 +1341,18 @@ writeFile('package.json', `{
     "mongoose": "^7.5.0",
     "nodemailer": "^6.9.6",
     "qrcode": "^1.5.3",
-    "axios": "^1.5.0"
+    "axios": "^1.5.0",
+    "react": "^18.2.0",
+    "react-native": "^0.72.0",
+    "expo": "^49.0.0",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/bottom-tabs": "^6.5.11"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
     "typescript": "^5.1.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.2.1"
   },
   "engines": {
     "node": ">=14.0.0",
