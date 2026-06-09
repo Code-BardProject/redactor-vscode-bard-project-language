@@ -1,0 +1,465 @@
+1. Встроенные компоненты React Native (устанавливать не нужно)
+
+```
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  FlatList,
+  SectionList,
+  TextInput,
+  TouchableOpacity,
+  TouchableHighlight,
+  Pressable,
+  Button,
+  StyleSheet,
+  Dimensions,
+  Platform,
+  Alert,
+  ActivityIndicator,
+  Modal,
+  SafeAreaView,
+  StatusBar,
+  RefreshControl,
+  KeyboardAvoidingView,
+  Linking,
+  Share,
+  Animated,
+  BackHandler,
+} from 'react-native';
+```
+
+
+
+2. Популярные внешние библиотеки + импорт
+
+```
+№,Библиотека,Установка (команда),Как импортировать
+1,react-native-svg,npm i react-native-svg,"import Svg, { Circle, Path, Rect, Defs, Stop, LinearGradient } from 'react-native-svg';"
+2,react-native-linear-gradient,npm i react-native-linear-gradient,import LinearGradient from 'react-native-linear-gradient';
+3,@react-navigation/native,npm i @react-navigation/native,import { NavigationContainer } from '@react-navigation/native';
+4,@react-navigation/native-stack,npm i @react-navigation/native-stack,import { createNativeStackNavigator } from '@react-navigation/native-stack';
+5,@react-navigation/bottom-tabs,npm i @react-navigation/bottom-tabs,import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+6,react-native-reanimated,npm i react-native-reanimated,"import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';"
+7,react-native-gesture-handler,npm i react-native-gesture-handler,"import { GestureHandlerRootView, Gesture, GestureDetector } from 'react-native-gesture-handler';"
+8,react-native-vector-icons,npm i react-native-vector-icons,import Icon from 'react-native-vector-icons/Ionicons';
+9,react-native-fast-image,npm i react-native-fast-image,import FastImage from 'react-native-fast-image';
+10,axios,npm i axios,import axios from 'axios';
+11,@react-native-async-storage/async-storage,npm i @react-native-async-storage/async-storage,import AsyncStorage from '@react-native-async-storage/async-storage';
+12,zustand,npm i zustand,import { create } from 'zustand';
+13,react-native-mmkv,npm i react-native-mmkv,import { MMKV } from 'react-native-mmkv';
+14,react-hook-form,npm i react-hook-form,import { useForm } from 'react-hook-form';
+15,zod,npm i zod,import { z } from 'zod';
+16,react-native-maps,npm i react-native-maps,"import MapView, { Marker } from 'react-native-maps';"
+17,react-native-webview,npm i react-native-webview,import WebView from 'react-native-webview';
+18,react-native-video,npm i react-native-video,import Video from 'react-native-video';
+19,react-native-image-picker,npm i react-native-image-picker,import { launchImageLibrary } from 'react-native-image-picker';
+20,react-native-toast-message,npm i react-native-toast-message,import Toast from 'react-native-toast-message';
+```
+
+Пример большого импорта в файле  App.tsx
+```
+import React from 'react';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  Dimensions,
+  Alert,
+} from 'react-native';
+
+import LinearGradient from 'react-native-linear-gradient';
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Stop, Rect } from 'react-native-svg';
+import Icon from 'react-native-vector-icons/Ionicons';
+import FastImage from 'react-native-fast-image';
+import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
+
+const { width } = Dimensions.get('window');
+
+const App = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <LinearGradient colors={['#667eea', '#764ba2']} style={styles.gradient}>
+        <Text style={styles.text}>React Native</Text>
+      </LinearGradient>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  gradient: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  text: { color: 'white', fontSize: 24 },
+});
+
+export default App;
+
+```
+Теперь добавляю расширенный список библиотек + примеры создания форм, функций, компонентов и типичных задач.
+1. Встроенные компоненты React Native
+(уже показывал ранее — оставляю как есть)
+2. Полный расширенный список библиотек + импорт
+```
+// Навигация
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+// Анимации и жесты
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring, 
+  withTiming 
+} from 'react-native-reanimated';
+import { GestureHandlerRootView, Gesture, GestureDetector } from 'react-native-gesture-handler';
+
+// SVG и Градиенты
+import Svg, { Defs, LinearGradient as SvgGradient, Stop, Rect, Path, Circle } from 'react-native-svg';
+import LinearGradient from 'react-native-linear-gradient';
+
+// Формы и валидация
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+
+// Состояние
+import { create } from 'zustand';           // Zustand
+import { Provider } from 'react-redux';     // Redux (если используешь)
+
+// HTTP и хранение
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MMKV } from 'react-native-mmkv';
+
+// Другие популярные
+import FastImage from 'react-native-fast-image';
+import Icon from 'react-native-vector-icons/Ionicons';
+import MapView, { Marker } from 'react-native-maps';
+import WebView from 'react-native-webview';
+import Video from 'react-native-video';
+import Toast from 'react-native-toast-message';
+```
+3. Примеры создания (Формы, Функции, Компоненты)
+Пример 1: Создание формы с react-hook-form + zod
+```
+import React from 'react';
+import { View, TextInput, Text, Button } from 'react-native';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email('Неверный email'),
+  password: z.string().min(6, 'Минимум 6 символов'),
+});
+
+type FormData = z.infer<typeof schema>;
+
+const LoginForm = () => {
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
+
+  const onSubmit = (data: FormData) => {
+    console.log('Данные формы:', data);
+    // Здесь отправка на сервер
+  };
+
+  return (
+    <View>
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            placeholder="Email"
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+      />
+      {errors.email && <Text>{errors.email.message}</Text>}
+
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            placeholder="Пароль"
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+      />
+      {errors.password && <Text>{errors.password.message}</Text>}
+
+      <Button title="Войти" onPress={handleSubmit(onSubmit)} />
+    </View>
+  );
+};
+```
+
+Пример 2: Zustand — создание хранилища (Store)
+tsx
+```
+import { create } from 'zustand';
+
+interface UserState {
+  user: any | null;
+  token: string | null;
+  login: (userData: any, token: string) => void;
+  logout: () => void;
+}
+
+export const useUserStore = create<UserState>((set) => ({
+  user: null,
+  token: null,
+  login: (userData, token) => set({ user: userData, token }),
+  logout: () => set({ user: null, token: null }),
+}));
+```
+Использование:
+tsx ```
+const { user, login } = useUserStore();
+login(userData, token);
+```
+
+Пример 3: Анимированный компонент с Reanimated
+```
+tsximport Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+
+const AnimatedBox = () => {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const onPress = () => {
+    scale.value = withSpring(1.5, { damping: 10 });
+    setTimeout(() => { scale.value = withSpring(1); }, 300);
+  };
+
+  return (
+    <Animated.View style={animatedStyle}>
+      <TouchableOpacity onPress={onPress}>
+        <Text>Нажми меня</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+};```
+
+
+Пример 4: Linear Gradient + SVG
+```
+<LinearGradient colors={['#FF6B6B', '#4ECDC4']} style={styles.gradient}>
+  <Svg height="100" width="100">
+    <Defs>
+      <SvgGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+        <Stop offset="0" stopColor="#fff" />
+        <Stop offset="1" stopColor="#000" />
+      </SvgGradient>
+    </Defs>
+    <Circle cx="50" cy="50" r="40" fill="url(#grad1)" />
+  </Svg>
+</LinearGradient>
+```
+1. Установка Firebase (актуально на 2026)
+```
+npm install @react-native-firebase/app
+npm install @react-native-firebase/auth
+npm install @react-native-firebase/firestore
+npm install @react-native-google-signin/google-signin   # для Google Auth После установки для iOS: cd ios && pod install 
+```
+
+2. Firebase Auth + Firestore — базовая настройка
+firebase.js (или config/firebase.ts)
+
+```
+import firebase from '@react-native-firebase/app';
+import '@react-native-firebase/auth';
+import '@react-native-firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: "твой_api_key",
+  authDomain: "твой-проект.firebaseapp.com",
+  projectId: "твой-проект",
+  storageBucket: "твой-проект.appspot.com",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+// Инициализация (делается автоматически при импорте)
+export const auth = firebase.auth();
+export const db = firebase.firestore();
+
+export default firebase;
+```
+
+3. Авторизация через Google
+tsx
+```
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+
+// Настройка Google SignIn (вызвать один раз, например в App.tsx)
+GoogleSignin.configure({
+  webClientId: 'твой_webClientId_from_firebase', // из Firebase Console
+});
+
+export const signInWithGoogle = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const { idToken } = await GoogleSignin.signIn();
+    
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    const userCredential = await auth.signInWithCredential(googleCredential);
+    
+    console.log('Пользователь вошёл:', userCredential.user);
+    return userCredential.user;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const signOut = async () => {
+  await auth.signOut();
+  await GoogleSignin.revokeAccess();
+};
+```
+4. Redux Toolkit + Firebase
+Установка:
+Bash
+npm install @reduxjs/toolkit react-redux
+store/index.ts
+tsx
+```
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slices/authSlice';
+import userReducer from './slices/userSlice';
+
+export const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    user: userReducer,
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+```
+slices/authSlice.ts
+```
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import auth from '@react-native-firebase/auth';
+
+export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async () => {
+  // Здесь код signInWithGoogle из примера выше
+});
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: { user: null, loading: false, error: null },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginWithGoogle.pending, (state) => { state.loading = true; })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      });
+  },
+});
+
+export default authSlice.reducer;
+```
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import auth from '@react-native-firebase/auth';
+
+export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async () => {
+  // Здесь код signInWithGoogle из примера выше
+});
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: { user: null, loading: false, error: null },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginWithGoogle.pending, (state) => { state.loading = true; })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      });
+  },
+});
+
+export default authSlice.reducer;
+```
+slices/userSlice.ts (пример работы с Firestore)
+tsximport { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import firestore from '@react-native-firebase/firestore';
+
+export const fetchUserData = createAsyncThunk('user/fetchUserData', async (uid: string) => {
+  const doc = await firestore().collection('users').doc(uid).get();
+  return doc.data();
+});
+
+export const saveUserData = createAsyncThunk('user/saveUserData', async ({ uid, data }: any) => {
+  await firestore().collection('users').doc(uid).set(data, { merge: true });
+});
+Подключение в App.tsx:
+tsximport { Provider } from 'react-redux';
+import { store } from './store';
+
+const App = () => {
+  return (
+    <Provider store={store}>
+      {/* Навигация и остальной код */}
+    </Provider>
+  );
+};
+
+5. Навигация: Stack + Bottom Tabs
+Установка:
+Bashnpm install @react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs
+npm install react-native-screens react-native-safe-area-context
+navigation/AppNavigator.tsx
+tsximport React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import LoginScreen from '../screens/LoginScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const TabNavigator = () => (
+  <Tab.Navigator>
+    <Tab.Screen name="Главная" component={HomeScreen} />
+    <Tab.Screen name="Профиль" component={ProfileScreen} />
+    <Tab.Screen name="Настройки" component={SettingsScreen} />
+  </Tab.Navigator>
+);
+
+const AppNavigator = () => {
+  const user = null; // можно брать из Redux / Context
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {user ? (
+          <Stack.Screen name="Main" component={TabNavigator} />
+        ) : (
+          <Stack.Screen name="Login" component={LoginScreen} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default AppNavigator;

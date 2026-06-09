@@ -43,10 +43,8 @@ export class BardGenerator {
   private async askProjectTargets(): Promise<string[] | undefined> {
     const options: vscode.QuickPickItem[] = [
       { label: 'React Native', description: 'Mobile Android / iOS / Windows / macOS' },
-      { label: 'Web', description: 'Browser application output' },
-      { label: 'Angular', description: 'Angular component and shell' },
       { label: 'Node.js Backend', description: 'Express server with MongoDB Atlas support' },
-      { label: 'Full Workspace', description: 'All targets together' }
+      { label: 'Full Workspace', description: 'React Native + Node.js Backend together' }
     ];
 
     const selection = await vscode.window.showQuickPick(options, {
@@ -60,7 +58,7 @@ export class BardGenerator {
 
     const selected = selection.map(item => item.label);
     if (selected.includes('Full Workspace')) {
-      return ['React Native', 'Web', 'Angular', 'Node.js Backend'];
+      return ['React Native', 'Node.js Backend'];
     }
 
     return selected;
@@ -89,10 +87,6 @@ export class BardGenerator {
       directories.add('web');
       directories.add('web/components');
     }
-    if (targets.includes('Angular')) {
-      directories.add('angular/src/app');
-      directories.add('angular/src/assets');
-    }
     if (targets.includes('Node.js Backend')) {
       directories.add('backend/db');
     }
@@ -118,12 +112,6 @@ export class BardGenerator {
       await this.writeTextFile(root, 'web/components/visual-card.js', this.webVisualComponentTemplate());
     }
 
-    if (targets.includes('Angular')) {
-      await this.writeTextFile(root, 'angular/src/app/app.component.html', this.angularHtmlTemplate());
-      await this.writeTextFile(root, 'angular/src/app/app.component.ts', this.angularComponentTemplate());
-      await this.writeTextFile(root, 'angular/package.json', this.angularPackageTemplate());
-      await this.writeTextFile(root, 'angular/README.md', this.angularReadmeTemplate());
-    }
 
     if (targets.includes('Node.js Backend')) {
       await this.writeTextFile(root, 'backend/server.js', this.backendServerTemplate());
@@ -146,10 +134,6 @@ export class BardGenerator {
       await this.writeTextFile(root, 'web/index.html', this.generateHtml(sections.html));
       await this.writeTextFile(root, 'web/styles.css', sections.css || this.webStylesTemplate());
       await this.writeTextFile(root, 'web/script.js', sections.js || this.webScriptTemplate());
-    }
-    if (targets.includes('Angular')) {
-      await this.writeTextFile(root, 'angular/src/app/app.component.html', this.angularHtmlTemplate(sections.html));
-      await this.writeTextFile(root, 'angular/src/app/app.component.ts', this.angularComponentTemplate(sections.js));
     }
     if (targets.includes('Node.js Backend')) {
       await this.writeTextFile(root, 'backend/server.js', this.backendServerTemplate(sections.backend));
@@ -368,53 +352,6 @@ if (root) {
 `;
   }
 
-  private angularHtmlTemplate(html = '') {
-    return html || `<div class="angular-app">
-  <h1>Bard Project Angular</h1>
-  <div class="page">
-    <p>Use the .bard-project source to generate Angular output.</p>
-  </div>
-</div>
-`;
-  }
-
-  private angularComponentTemplate(js = '') {
-    const jsBody = js || 'onButtonClick() {\\n    console.log("Bard Project Angular clicked");\\n  }';
-    return `import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  ${jsBody.replace(/\n/g, '\n  ')}
-}
-`;
-  }
-
-  private angularPackageTemplate() {
-    return `{
-  "name": "bard-project-angular",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "start": "ng serve"
-  },
-  "dependencies": {
-    "@angular/core": "^16.0.0"
-  }
-}
-`;
-  }
-
-  private angularReadmeTemplate() {
-    return `# Angular Bard Project
-
-This Angular output is generated from a .bard-project file. Replace content in app.component.html and app.component.ts to customize your UI.
-`;
-  }
-
   private backendServerTemplate(backendCode = '') {
     return `const express = require('express');
 const cors = require('cors');
@@ -584,6 +521,6 @@ MONGODB_DATABASE=bard_project_db
   }
 
   private rootReadmeTemplate(targets: string[]) {
-    return `# Bard Project Workspace\n\nGenerated targets: ${targets.join(', ')}.\n\n## How to use\n\n- Open the workspace in VS Code.\n- Edit your .bard-project file.\n- Run the command "Bard Project: Generate React Native / Angular / Node.js" to update generated targets.\n\n## Project targets\n\n${targets.includes('React Native') ? '- React Native mobile app: Android, iOS, Windows, macOS\\n' : ''}${targets.includes('Web') ? '- Static web app\\n' : ''}${targets.includes('Angular') ? '- Angular component shell\\n' : ''}${targets.includes('Node.js Backend') ? '- Node.js backend with MongoDB Atlas support\\n' : ''}`;
+    return `# Bard Project Workspace\n\nGenerated targets: ${targets.join(', ')}.\n\n## How to use\n\n- Open the workspace in VS Code.\n- Edit your .bard-project file.\n- Run the command "Bard Project: Generate React Native / Node.js" to update generated targets.\n\n## Project targets\n\n${targets.includes('React Native') ? '- React Native mobile app: Android, iOS, Windows, macOS\\n' : ''}${targets.includes('Node.js Backend') ? '- Node.js backend with MongoDB Atlas support\\n' : ''}`;
   }
 }

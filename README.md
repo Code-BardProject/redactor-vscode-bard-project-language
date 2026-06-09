@@ -7,13 +7,91 @@ VS Code расширение для работы с файлом `.bard-project`
 - ✅ Язык `bard-project` с подсветкой синтаксиса
 - ✅ Генерация проектов для **React Native** (Android, iOS, Windows, macOS)
 - ✅ Генерация веб-приложений (HTML/CSS/JS)
-- ✅ Генерация Angular приложений
 - ✅ Генерация Node.js сервера с Express и MongoDB Atlas
 - ✅ QR-код для подключения устройств
 - ✅ Автоматическая обработка занятых портов
 - ✅ Красивый фронтенд с интерактивными примерами
 
-## 📦 npm Скрипты
+## 📥 Запуск проекта из GitHub
+
+### 1. Клонирование репозитория
+
+```bash
+# Клонируйте репозиторий
+git clone https://github.com/Code-BardProject/redactor-vscode-bard-project-language.git
+
+# Перейдите в папку проекта
+cd redactor-vscode-bard-project-language
+```
+
+### 2. Установка зависимостей
+
+```bash
+# Установите зависимости расширения
+npm install
+```
+
+> Если вы хотите обновить проект из GitHub, сначала подтяните последние изменения, затем установите зависимости заново:
+>
+> ```bash
+> git pull origin main
+> npm install
+> ```
+>
+> Это обеспечит обновление кода из репозитория и установку актуальных библиотек.
+
+### 3. Компиляция расширения
+
+```bash
+# Компилируем TypeScript
+npm run compile
+
+# Или смотрим за изменениями в режиме разработки
+npm run watch
+```
+
+### 4. Запуск расширения в VS Code
+
+**Способ 1: Разработка с отладкой**
+```bash
+# Нажмите F5 в VS Code (или используйте меню Run → Start Debugging)
+# Откроется новое окно VS Code с загруженным расширением
+```
+
+**Способ 2: Установка локально**
+```bash
+# Установите расширение глобально для разработки
+npm link
+
+# Или установите как расширение VS Code
+npm install -g .
+```
+
+### 5. Создание нового проекта
+
+```bash
+# После установки используйте команду
+npm run create-bard-project MyAwesomeApp
+
+# Проект будет создан в текущей директории с именем MyAwesomeApp
+```
+
+### 6. Запуск созданного проекта
+
+```bash
+# Перейдите в папку проекта
+cd MyAwesomeApp
+
+# Установите зависимости
+npm install
+
+# Запустите сервер
+npm start
+
+# Откройте http://localhost:3000 в браузере
+```
+
+## �📦 npm Скрипты
 
 ### Быстрый старт
 
@@ -22,7 +100,7 @@ VS Code расширение для работы с файлом `.bard-project`
 npm run generate
 
 # Или отдельные скрипты:
-npm run generate:web      # 🌐 Веб-приложение (Angular)
+npm run generate:web      # 🌐 Веб-приложение
 npm run generate:android  # 📱 Android приложение (React Native)
 npm run generate:ios      # 🍎 iOS приложение (React Native)
 npm run generate:linux    # 🐧 Linux приложение
@@ -66,6 +144,15 @@ create-bard-project MyApp
 
 После создания проекта в нем будут все необходимые платформы.
 
+> Если проект был создан из GitHub или вы хотите обновить его позже, выполните в папке проекта:
+>
+> ```bash
+> git pull origin main
+> npm install
+> ```
+>
+> Это обновит локальный код из GitHub и установит все библиотеки.
+
 ### 2️⃣ React Native + Expo (Android, iOS, Web)
 
 ```bash
@@ -85,7 +172,7 @@ npx expo start --ios        # 🍎 iOS
 npx expo start --web        # 🌐 Web
 ```
 
-### 3️⃣ Angular (Веб-приложение)
+### 3️⃣ Web (Веб-приложение)
 
 ```bash
 cd MyApp/web
@@ -93,11 +180,10 @@ cd MyApp/web
 # Установка зависимостей
 npm install
 
-# Запуск разработки (http://localhost:4200)
+# Запуск статического веб-сервера
 npm start
 
-# Или использование angular-cli напрямую
-ng serve
+# Откройте http://localhost:5000
 ```
 
 ### 4️⃣ Node.js + Express + MongoDB Atlas
@@ -269,7 +355,7 @@ my-project/
 1. **Откройте файл `.bard-project`**
 2. **Запустите команду** (Ctrl+Shift+P):
    - `Bard Project: Create Project` - создать новый проект
-   - `Bard Project: Generate React Native / Angular / Node.js` - генерировать код из текущего файла
+   - `Bard Project: Generate React Native / Node.js` - генерировать код из текущего файла
 
 ### В командной строке
 
@@ -695,7 +781,7 @@ master теперь отслеживает origin/main
 
 
 npm run generate — все платформы
-npm run generate:web — Angular веб
+npm run generate:web — Web приложение
 npm run generate:android — React Native Android
 npm run generate:ios — React Native iOS
 npm run generate:linux — Linux
