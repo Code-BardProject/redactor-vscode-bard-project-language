@@ -1,5 +1,5 @@
 {
-  "name": "create-bard-project",
+  "name": "create-bard-project-language",
   "displayName": "Bard Project Language",
   "description": "VS Code extension and CLI for .bard-project language with project scaffolding for React Native, Node.js and MongoDB Atlas.",
   "version": "0.0.1",
@@ -87,7 +87,8 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./tsconfig.json",
     "watch": "tsc -watch -p ./tsconfig.json",
-    "create-bard-project": "node ./scripts/createBardProject.js",
+    "create-bard-project-language": "node ./scripts/createBardProject.js",
+    "create-bard-project": "npm run create-bard-project-language --",
     "generate": "node ./scripts/generateCode.js --all",
     "generate:web": "node ./scripts/generateCode.js --web",
     "generate:android": "node ./scripts/generateCode.js --android",

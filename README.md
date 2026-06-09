@@ -71,9 +71,9 @@ npm install -g .
 
 ```bash
 # После установки используйте команду
-npm run create-bard-project MyAwesomeApp
+npx create-bard-project-language MyApp
 
-# Проект будет создан в текущей директории с именем MyAwesomeApp
+# Проект будет создан в текущей директории с именем MyApp
 ```
 
 ### 6. Запуск созданного проекта
@@ -123,7 +123,7 @@ npm run watch
 npm run vscode:prepublish
 
 # Создание нового проекта
-npm run create-bard-project
+npm run create-bard-project-language
 ```
 
 ## 🚀 Быстрый старт - Создание и запуск проектов
@@ -132,14 +132,14 @@ npm run create-bard-project
 
 ```bash
 # Из папки расширения
-npm run create-bard-project MyApp
+npm run create-bard-project-language MyApp
 
 # Или используя npx (после публикации на npm)
-npx create-bard-project MyApp
+npx create-bard-project-language MyApp
 
 # Или используя глобальную установку
 npm install -g .
-create-bard-project MyApp
+create-bard-project-language MyApp
 ```
 
 После создания проекта в нем будут все необходимые платформы.
@@ -379,7 +379,7 @@ cd "C:\Users\admin\Desktop\redactor vscode"
 npm link
 
 # После этого команда доступна из любой папки
-create-bard-project MyApp
+create-bard-project-language MyApp
 ```
 
 ## 📁 Создание нового проекта
@@ -390,7 +390,7 @@ create-bard-project MyApp
 
 ```bash
 cd "C:\Users\admin\Desktop\redactor vscode"
-npm run create-bard-project MyApp
+npm run create-bard-project-language MyApp
 ```
 
 После этого будет создана папка `MyApp` рядом с текущим каталогом.
@@ -400,7 +400,7 @@ npm run create-bard-project MyApp
 ```bash
 cd "C:\Users\admin\Desktop\redactor vscode"
 npm install -g .
-create-bard-project MyApp
+create-bard-project-language MyApp
 ```
 
 ### 3. Установка напрямую из GitHub
@@ -418,13 +418,13 @@ npm install -g git+ssh://git@github.com/Code-BardProject/redactor-vscode-bard-pr
 После установки команда доступна из любой папки:
 
 ```bash
-create-bard-project MyApp
+create-bard-project-language MyApp
 ```
 
 ### 4. Установка через npx (если пакет опубликован)
 
 ```bash
-npx create-bard-project MyApp
+npx create-bard-project-language MyApp
 ```
 
 ## 🎨 Использование генератора структуры проекта
@@ -477,10 +477,10 @@ npm publish
 
 `publishConfig` уже настроен на `https://registry.npmjs.org/`, поэтому команда будет публиковаться в npm.
 
-Если пакет будет опубликован на npm как `create-bard-project`, тогда будет работать:
+Если пакет будет опубликован на npm как `create-bard-project-language`, тогда будет работать:
 
 ```bash
-npx create-bard-project MyApp
+npx create-bard-project-language MyApp
 ```
 
 ### Запуск сервера
@@ -743,11 +743,11 @@ MIT License
 ## 📧 Контакты
 
 - **GitHub**: https://github.com/Code-BardProject/redactor-vscode-bard-project-language
-- **NPM**: https://www.npmjs.com/package/create-bard-project
+- **NPM**: https://www.npmjs.com/package/create-bard-project-language
 
 ---
 
-**Последнее обновление:** 6 июня 2024
+**Последнее обновление:** 6 июня 2026
 **Версия:** 0.0.1
 **Статус:** В разработке 🔨
 

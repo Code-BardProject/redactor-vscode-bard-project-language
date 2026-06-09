@@ -7,8 +7,8 @@
 
 2. Установка на своём компьютере
 1) Установите Node.js и npm, если ещё не установлены.
-2) Установите CLI-генератор из GitHub или npm:
-   npm install -g create-bard-project
+2) Установите CLI-генератор из npm:
+   npm install -g create-bard-project-language
 
 3. Создание проекта через команду npx
 - Запуск генератора:
