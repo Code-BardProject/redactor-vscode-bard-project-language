@@ -1,0 +1,105 @@
+Инструкция для пользователей: как работать с генератором проекта
+
+1. Что это за проект
+- Это репозиторий с генератором проектов `bard-project-language`.
+- Он позволяет всем пользователям на Windows, Linux или macOS создавать проекты из шаблона с общим языком, сервером и мобильными/веб платформами.
+- В результате будет создана специальная папка `bard-project-language` / `MyApp` внутри вашего ПК, в которой будет готовый проект и связка с GitHub.
+
+2. Установка на своём компьютере
+1) Клонируйте репозиторий:
+   git clone https://github.com/Code-BardProject/redactor-vscode-bard-project-language.git
+   cd redactor-vscode-bard-project-language
+2) Установите зависимости:
+   npm install
+
+3. Запуск генератора через npx
+- Если пакет опубликован на npm, команда будет простой:
+  npx create-bard-project-language MyApp
+- Пока пакет не опубликован, используйте локальную установку из репозитория:
+  npm install -g .
+  create-bard-project-language MyApp
+
+4. Что создаётся на ПК
+- В текущей папке будет создана папка `MyApp`.
+- Внутри проекта будут файлы и папки для платформ:
+  - `android/`
+  - `ios/`
+  - `linux/`
+  - `macos/`
+  - `windows/`
+  - `web/`
+  - `server/`
+  - `shared/`
+  - `auth/`
+- В папке проекта будет форма или модуль, который связывается с GitHub для поддержки и обновлений.
+
+5. Как использовать проект на Windows, Linux, macOS
+cd MyApp
+npm install
+
+# Запустить сервер
+npm start
+
+# Сгенерировать платформы
+npm run generate
+npm run generate:web
+npm run generate:android
+npm run generate:ios
+npm run generate:linux
+npm run generate:windows
+npm run generate:macos
+npm run generate:server
+
+6. Настройка VS Code для работы с нашим языком
+Откройте `settings.json` и добавьте:
+{
+  "bard-project-language": true,
+  "bard-project-language.confirmPasteNative": true,
+  "workbench.settings.bard-project-Language": [
+    "## 🚀 npm Скрипты",
+    "npm run generate",
+    "npm run generate:web",
+    "npm run generate:android",
+    "npm run generate:ios",
+    "npm run generate:linux",
+    "npm run generate:windows",
+    "npm run generate:macos",
+    "npm run generate:server",
+    "npm run generate:test",
+    "npm install",
+    "npm start",
+    "npm run dev"
+  ]
+}
+
+7. Обновление проекта и языка
+- Чтобы получить последние изменения из GitHub, в папке генератора выполните:
+  git pull origin main
+  npm install
+- Чтобы получить обновления внутри созданного проекта:
+  cd MyApp
+  npm install
+
+8. Пример команд для пользователей
+# Установка зависимостей
+npm install
+
+# Запуск сервера
+npm start
+
+# Использование генератора
+npm run generate
+npm run generate:web
+npm run generate:android
+npm run generate:server
+
+9. Примечания
+- Для работы React Native рекомендуется использовать Expo.
+- Для Firebase Google Sign-In настройте:
+  GoogleSignin.configure({ webClientId: 'ВАШ_WEB_CLIENT_ID' });
+- Для MongoDB Atlas используйте backend API (Node.js + Express), не подключайтесь напрямую из мобильного клиента.
+
+10. Дополнительно
+- Пользователь может открыть терминал на своём ПК, выполнить `npx create-bard-project-language` и получить рабочий проект.
+- В проекте будет поддержка Windows, Linux и macOS.
+- После установки у пользователя в VS Code появится доступ к нашему языку программирования и генератору.
