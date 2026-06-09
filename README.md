@@ -71,7 +71,7 @@ npm install -g .
 
 ```bash
 # После установки используйте команду
-npx create-bard-project-language MyApp
+create-bard-project-language MyApp
 
 # Проект будет создан в текущей директории с именем MyApp
 ```
@@ -426,6 +426,18 @@ create-bard-project-language MyApp
 ```bash
 npx create-bard-project-language MyApp
 ```
+
+> Пока пакет не опубликован на npm, используйте установку напрямую из GitHub:
+>
+> ```bash
+> npm install -g git+https://github.com/Code-BardProject/redactor-vscode-bard-project-language.git
+> ```
+> 
+> После этого запустите:
+> 
+> ```bash
+> create-bard-project-language MyApp
+> ```
 
 ## 🎨 Использование генератора структуры проекта
 
