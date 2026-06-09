@@ -44,7 +44,8 @@
   ],
   "main": "./out/extension.js",
   "bin": {
-    "create-bard-project": "./scripts/createBardProject.js"
+    "create-bard-project": "./scripts/createBardProject.js",
+    "create-bard-project-language": "./scripts/createBardProject.js"
   },
   "contributes": {
     "languages": [

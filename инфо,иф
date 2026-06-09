@@ -6,20 +6,23 @@
 - В результате будет создана специальная папка `bard-project-language` / `MyApp` внутри вашего ПК, в которой будет готовый проект и связка с GitHub.
 
 2. Установка на своём компьютере
-1) Клонируйте репозиторий:
-   git clone https://github.com/Code-BardProject/redactor-vscode-bard-project-language.git
-   cd redactor-vscode-bard-project-language
-2) Установите зависимости:
-   npm install
+1) Установите Node.js и npm, если ещё не установлены.
+2) Установите CLI-генератор из GitHub или npm:
+   npm install -g create-bard-project
 
-3. Запуск генератора через npx
-- Если пакет опубликован на npm, команда будет простой:
+3. Создание проекта через команду npx
+- Запуск генератора:
   npx create-bard-project-language MyApp
-- Пока пакет не опубликован, используйте локальную установку из репозитория:
-  npm install -g .
+- Команда создаст папку `MyApp` и наполнит её структурой проекта.
+- Вам не нужно вручную клонировать репозиторий или выполнять `git clone`.
+
+4. Если пакет ещё не опубликован в npm
+- Установите CLI из GitHub напрямую:
+  npm install -g https://github.com/Code-BardProject/redactor-vscode-bard-project-language.git
+- Затем запустите:
   create-bard-project-language MyApp
 
-4. Что создаётся на ПК
+5. Что создаётся на ПК
 - В текущей папке будет создана папка `MyApp`.
 - Внутри проекта будут файлы и папки для платформ:
   - `android/`
