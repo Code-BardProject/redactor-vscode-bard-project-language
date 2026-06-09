@@ -246,6 +246,86 @@ const styles = StyleSheet.create({
 `);
 }
 
+function createPlatformFiles() {
+  log('Генерация платформенных App.js и shared конфигурации...');
+
+  writeFile('shared/index.ts', `export const projectName = '${projectName}';
+export const version = '1.0.0';
+export const description = 'Shared configuration for all Bard platforms';
+export const platforms = ['android', 'ios', 'linux', 'macos', 'windows', 'web'];
+`);
+
+  writeFile('app.js', `import { projectName, description, version } from './shared/index';
+
+console.log(\`\${projectName} v\${version} initialized\`);
+console.log(description);
+
+export default function App() {
+  return null;
+}
+`);
+
+  writeFile('hooks/useExample.js', `export function useExample() {
+  return {
+    message: 'Hello from shared hook',
+  };
+}
+`);
+
+  const platformTemplate = (platformName) => `import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { projectName } from '../shared/index';
+
+export default function ${platformName}App() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{projectName} ${platformName} App</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 24 }
+});
+`;
+
+  writeFile('android/App.js', platformTemplate('Android'));
+  writeFile('ios/App.js', platformTemplate('iOS'));
+  writeFile('linux/App.js', platformTemplate('Linux'));
+  writeFile('windows/App.js', platformTemplate('Windows'));
+  writeFile('macos/App.js', platformTemplate('macOS'));
+
+  writeFile('web/App.js', `import React from 'react';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { projectName } from '../shared/index';
+
+export default function App() {
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{projectName}</Text>
+        <Text style={styles.subtitle}>React Native Web Application</Text>
+      </View>
+      <View style={styles.content}>
+        <Text style={styles.text}>🚀 Web app generated from shared config</Text>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flexGrow: 1, backgroundColor: '#f5f5f5' },
+  header: { backgroundColor: '#667eea', padding: 32, alignItems: 'center' },
+  title: { fontSize: 32, fontWeight: '700', color: '#fff' },
+  subtitle: { fontSize: 16, color: 'rgba(255,255,255,0.88)', marginTop: 8 },
+  content: { padding: 24, alignItems: 'center' },
+  text: { fontSize: 18, color: '#333' }
+});
+`);
+}
+
+if (flags.all || flags.reactNative || flags.web) createPlatformFiles();
 if (flags.all || flags.reactNative) createReactNative();
 if (flags.all || flags.server) {
   log('Генерация сервера...');

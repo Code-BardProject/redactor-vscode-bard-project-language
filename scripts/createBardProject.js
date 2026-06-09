@@ -844,17 +844,12 @@ app.use((req, res) => {
     error: 'Маршрут не найден',
     path: req.path,
     availableRoutes: ['/', '/api/greet?user=1', '/api/users', '/api/status', '/api/qrcode', '/api/send-email']
-app.use((req, res) => {
-  res.status(404).json({
-    error: 'Маршрут не найден',
-    path: req.path,
-    availableRoutes: ['/', '/api/greet?user=1', '/api/users', '/api/status', '/api/qrcode', '/api/send-email']
   });
 });
 
 // Функция для поиска доступного порта
 const findAvailablePort = (startPort, maxAttempts = 5) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let currentPort = startPort;
     let attempts = 0;
 
@@ -866,12 +861,11 @@ const findAvailablePort = (startPort, maxAttempts = 5) => {
 
       server.on('error', (err) => {
         if (err.code === 'EADDRINUSE' && attempts < maxAttempts) {
-          currentPort++;
-          attempts++;
+          currentPort += 1;
+          attempts += 1;
           tryListen();
         } else {
-          console.error('❌ Failed to find available port:', err.message);
-          process.exit(1);
+          reject(err);
         }
       });
     };
@@ -882,7 +876,11 @@ const findAvailablePort = (startPort, maxAttempts = 5) => {
 
 // Запуск с автоматическим поиском порта
 const initialPort = process.env.PORT || 3000;
-findAvailablePort(parseInt(initialPort, 10));
+findAvailablePort(parseInt(initialPort, 10))
+  .catch(err => {
+    console.error('❌ Failed to find available port:', err.message);
+    process.exit(1);
+  });
 `);
 writeFile('server/routes/index.js', `const express = require('express');
 const router = express.Router();
@@ -1346,7 +1344,10 @@ writeFile('package.json', `{
     "react-native": "^0.72.0",
     "expo": "^49.0.0",
     "@react-navigation/native": "^6.1.9",
-    "@react-navigation/bottom-tabs": "^6.5.11"
+    "@react-navigation/bottom-tabs": "^6.5.11",
+    "@react-native-firebase/app": "^17.0.0",
+    "@react-native-firebase/auth": "^17.0.0",
+    "@react-native-firebase/firestore": "^17.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
@@ -1488,6 +1489,14 @@ curl -X POST http://localhost:3000/api/send-email \\
 # Порт сервера (по умолчанию 3000)
 PORT=3000
 
+# Firebase
+FIREBASE_API_KEY=your-firebase-api-key
+FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+FIREBASE_APP_ID=your-firebase-app-id
+
 # MongoDB Atlas
 MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/database?retryWrites=true&w=majority
 
@@ -1588,6 +1597,14 @@ eb deploy
 writeFile('.env.example', `# Порт сервера
 PORT=3000
 
+# Firebase
+FIREBASE_API_KEY=your-firebase-api-key
+FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+FIREBASE_APP_ID=your-firebase-app-id
+
 # MongoDB
 MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/database?retryWrites=true&w=majority
 
@@ -1605,6 +1622,14 @@ API_SECRET=your-api-secret-here
 
 writeFile('.env', `# Порт сервера
 PORT=3000
+
+# Firebase
+FIREBASE_API_KEY=your-firebase-api-key
+FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+FIREBASE_APP_ID=your-firebase-app-id
 
 # MongoDB
 MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/database?retryWrites=true&w=majority
