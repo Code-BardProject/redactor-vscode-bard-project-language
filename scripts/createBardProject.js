@@ -548,11 +548,12 @@ writeFile('.expo/.gitkeep', '');
 writeFile('app/.gitkeep', '');
 writeFile('android/App.js', `import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { projectName } from '../shared/index';
 
 export default function AndroidApp() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>${name} Android App</Text>
+      <Text style={styles.title}>{projectName} Android App</Text>
     </View>
   );
 }
@@ -561,11 +562,12 @@ const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center
 `);
 writeFile('ios/App.js', `import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { projectName } from '../shared/index';
 
 export default function IOSApp() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>${name} iOS App</Text>
+      <Text style={styles.title}>{projectName} iOS App</Text>
     </View>
   );
 }
@@ -574,11 +576,12 @@ const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center
 `);
 writeFile('linux/App.js', `import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { projectName } from '../shared/index';
 
 export default function LinuxApp() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>${name} Linux App</Text>
+      <Text style={styles.title}>{projectName} Linux App</Text>
     </View>
   );
 }
@@ -587,11 +590,12 @@ const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center
 `);
 writeFile('windows/App.js', `import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { projectName } from '../shared/index';
 
 export default function WindowsApp() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>${name} Windows App</Text>
+      <Text style={styles.title}>{projectName} Windows App</Text>
     </View>
   );
 }
@@ -600,11 +604,12 @@ const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center
 `);
 writeFile('macos/App.js', `import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { projectName } from '../shared/index';
 
 export default function MacOSApp() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>${name} macOS App</Text>
+      <Text style={styles.title}>{projectName} macOS App</Text>
     </View>
   );
 }
@@ -620,12 +625,13 @@ writeFile('web/App.js', `/**
 
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { projectName } from '../shared/index';
 
 export default function App() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>${name}</Text>
+        <Text style={styles.title}>{projectName}</Text>
         <Text style={styles.subtitle}>React Native Web Application</Text>
       </View>
 
@@ -635,7 +641,7 @@ export default function App() {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>© 2024 ${name}</Text>
+        <Text style={styles.footerText}>© 2024 {projectName}</Text>
       </View>
     </ScrollView>
   );
@@ -1118,8 +1124,10 @@ writeFile('shared/index.ts', `/**
  * Содержит константы, конфиги, версии
  */
 
+export const projectName = '${name}';
+
 export const appConfig = {
-  name: '${name}',
+  name: projectName,
   version: '0.1.0',
   description: 'Bard Project - React Native + Node.js Backend',
   author: 'Bard Project Team',
@@ -1144,7 +1152,7 @@ export const apiConfig = {
   timeout: 10000,
 };
 
-export default { appConfig, firebaseConfig, mongoDBConfig, apiConfig };
+export default { projectName, appConfig, firebaseConfig, mongoDBConfig, apiConfig };
 `);
 
 writeFile('app.js', `/**
